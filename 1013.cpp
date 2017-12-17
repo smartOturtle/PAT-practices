@@ -46,7 +46,6 @@ int main()
 {
 	int citySize, roadSize, checkSize;
 	cin >> citySize >> roadSize >> checkSize;
-	gragh.resize(citySize);
 	for (int i = 0; i < roadSize; ++i)
 	{
 		int city1, city2;
