@@ -7,6 +7,7 @@ using namespace std;
 vector<int> serveTime;
 int windowSize, windowCapacity, customerSize, querySize;
 vector<int> queryTable;
+//时间驱动
 void Process()
 {
 	int currentTime = 480, customerIdx = 0;
