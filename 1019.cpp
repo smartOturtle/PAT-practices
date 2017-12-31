@@ -24,7 +24,7 @@ int main()
 		num /= radix;
 	}
 	if(IsPalindromic(result)) cout<<"Yes";
-  else cout<<"No";
+  	else cout<<"No";
 	cout << "\n";
 	cout << result.front();
 	for (int i = 1; i < result.size(); ++i)
