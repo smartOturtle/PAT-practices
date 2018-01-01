@@ -20,26 +20,26 @@ void Process()
 		}
 		if (customerIdx == customerSize)break;
 	}
-	priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int, int>>> heap;
+	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> servingCustomers;
 	for (int i = 0; i < windowSize; ++i)
 	{
 		if (!windows[i].empty())
-			heap.push({ serveTime[windows[i].front()] + currentTime, i });
+			servingCustomers.push({ serveTime[windows[i].front()] + currentTime, i });
 	}
-	while (!heap.empty())
+	while (!servingCustomers.empty())
 	{
-		auto completeCust = heap.top();
-		auto& completedWindow = windows[completeCust.second];
-		currentTime = completeCust.first;
-		queryTable[completedWindow.front()] = currentTime;
-		heap.pop();
-		completedWindow.pop_front();
+		auto leftCust = servingCustomers.top();
+		auto& availableWindow = windows[leftCust.second];
+		currentTime = leftCust.first;
+		queryTable[availableWindow.front()] = currentTime;
+		servingCustomers.pop();
+		availableWindow.pop_front();
 		if (currentTime<17 * 60)
 		{
 			if (customerIdx<customerSize)
-				completedWindow.push_back(customerIdx++);
-			if (!completedWindow.empty())
-				heap.push({ serveTime[completedWindow.front()] + currentTime, completeCust.second });
+				availableWindow.push_back(customerIdx++);
+			if (!availableWindow.empty())
+				servingCustomers.push({ serveTime[availableWindow.front()] + currentTime, leftCust.second });
 		}
 	}
 }
