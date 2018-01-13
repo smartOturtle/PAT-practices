@@ -13,8 +13,7 @@ int main()
 	for (auto c : s)
 	{
 		int digit = c - '0';
-		if (check.find(digit) == check.end())check[digit] = 1;
-		else { ++check[digit]; }
+		++check[digit];
 	}
 	for(auto i=s.rbegin();i!=s.rend();++i)
 	{
