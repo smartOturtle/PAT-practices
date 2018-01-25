@@ -53,10 +53,10 @@ int main()
 				if (dist[idx] > road)tie(dist[idx], path[idx]) = make_tuple(road, i);
 			}
 	}
-	list<int> l;
+	vector<int> l;
 	for (int i = end; i != -1; i = path[i])
-		l.push_front(i);
-	l.push_front(start);
-	for (auto i = l.rbegin(); i != l.rend(); ++i)printf("%d", *i);
+		l.push_back(i);
+	l.push_back(start);
+	for (auto i = l.rbegin(); i != l.rend(); ++i)printf("%d ", *i);
 	printf("%d %d", dist[end].dist, dist[end].cost);
 }
