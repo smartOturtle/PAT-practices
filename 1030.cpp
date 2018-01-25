@@ -1,8 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <cstdio>
 #include <vector>
 #include <tuple>
-#include <list>
 using namespace std;
 
 struct Road
@@ -43,14 +40,14 @@ int main()
 		int idx = -1;
 		for (int i = 0; i < citySize; ++i)
 			if (dist[i].dist<INT16_MAX && !checked[i])
-				if(	idx == -1 || dist[idx].dist < dist[i].dist)idx = i;
+				if(	idx == -1 || dist[idx].dist < dist[i].dist) idx = i;
 		if(idx==-1)break;
 		checked[idx] = true;
 		for (int i = 0; i < citySize; ++i)
 			if(gragh[i][idx].dist<INT16_MAX&&!checked[i])
 			{
 				auto road = dist[i]+gragh[idx][i];
-				if (dist[idx] > road)tie(dist[idx], path[idx]) = make_tuple(road, i);
+				if (dist[idx] > road)tie(dist[idx], path[idx]) = tie(road, i);
 			}
 	}
 	vector<int> l;
