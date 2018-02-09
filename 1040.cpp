@@ -11,7 +11,6 @@ void ExtendString(int left,int right)
 		left--;
 		right++;
 	}
-	//if loop has broke out,left and the right has been isub or iadd
 	if (maxLen < right - left - 1)
 	{
 		lo = left + 1;
