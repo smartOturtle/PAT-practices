@@ -2,28 +2,10 @@
 
 #include <iostream>
 #include <vector>
-#include <string>
 #include <array>
 #include <algorithm>
 using namespace std;
-using Name = array<char, 4>;
-Name ToArray(char* cStr)
-{
-	Name name;
-	for (int i = 0; i < 4; ++i)
-	{
-		name[i] = cStr[i];
-	}
-	return name;
-}
-void PrintName(const Name& name)
-{
-	for (auto c : name)
-	{
-		printf("%c", c);
-	}
-	printf("\n");
-}
+using Name = array<char, 5>;
 int main(int argc, char* argv[])
 {
 	int studentSize, courseSize;
@@ -31,15 +13,14 @@ int main(int argc, char* argv[])
 	vector<vector<Name>> courses(courseSize);
 	for (int i = 0; i < studentSize; ++i)
 	{
-		char cStr[5];
+		Name name;
 		int size;
-		scanf("%s %d", cStr,&size);
-		auto name = ToArray(cStr);
+		scanf("%s %d", name.data(), &size);
 		for (int j = 0; j < size; ++j)
 		{
 			int courseId;
 			scanf("%d", &courseId);
-			courses[courseId-1].push_back(name);
+			courses[courseId - 1].emplace_back(move(name));
 		}
 	}
 	for (int i = 0; i < courses.size(); ++i)
@@ -48,7 +29,7 @@ int main(int argc, char* argv[])
 		printf("%d %d\n", i + 1, courses[i].size());
 		for (auto && name : courses[i])
 		{
-			PrintName(name);
+			printf("%s\n", name.data());
 		}
 	}
 }
