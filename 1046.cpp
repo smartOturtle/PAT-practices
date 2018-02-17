@@ -12,12 +12,14 @@ int main(int argc, char* argv[])
 	vector<int> eachDist(N);
 	vector<int> dis(N);//the distance is based on #1 to the other
 	int sum=0;
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < N-1; ++i)
 	{
 		scanf("%d", &eachDist[i]);
 		sum += eachDist[i];
-		if(i+1<N)dis[i+1] = sum;
+		dis[i+1] = sum;
 	}
+	scanf("%d", &eachDist[N-1]);
+	sum += eachDist[N-1];
 	int querySize;
 	cin >> querySize;
 	for (int i = 0; i < querySize; ++i)
