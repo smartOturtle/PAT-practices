@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 		{
 			int courseId;
 			scanf("%d", &courseId);
-			courses[courseId - 1].emplace_back(move(name));
+			courses[courseId - 1].push_back(name);
 		}
 	}
 	for (int i = 0; i < courses.size(); ++i)
