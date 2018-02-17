@@ -1,0 +1,54 @@
+#define  _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <array>
+#include <algorithm>
+using namespace std;
+using Name = array<char, 4>;
+Name ToArray(char* cStr)
+{
+	Name name;
+	for (int i = 0; i < 4; ++i)
+	{
+		name[i] = cStr[i];
+	}
+	return name;
+}
+void PrintName(const Name& name)
+{
+	for (auto c : name)
+	{
+		printf("%c", c);
+	}
+	printf("\n");
+}
+int main(int argc, char* argv[])
+{
+	int studentSize, courseSize;
+	cin >> studentSize >> courseSize;
+	vector<vector<Name>> courses(courseSize);
+	for (int i = 0; i < studentSize; ++i)
+	{
+		char cStr[5];
+		int size;
+		scanf("%s %d", cStr,&size);
+		auto name = ToArray(cStr);
+		for (int j = 0; j < size; ++j)
+		{
+			int courseId;
+			scanf("%d", &courseId);
+			courses[courseId-1].push_back(name);
+		}
+	}
+	for (int i = 0; i < courses.size(); ++i)
+	{
+		sort(courses[i].begin(), courses[i].end());
+		printf("%d %d\n", i + 1, courses[i].size());
+		for (auto && name : courses[i])
+		{
+			PrintName(name);
+		}
+	}
+}
