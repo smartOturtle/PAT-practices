@@ -22,5 +22,5 @@ int main(int argc, char* argv[])
 		}
 	}
 	cout<< max_element(colorFrequency.begin(), colorFrequency.end(),
-		[](const pair<int, int> a, const pair<int, int> b) { return a.second < b.second; })->first;
+		[](const pair<int, int>& a, const pair<int, int>& b) { return a.second < b.second; })->first;
 }
