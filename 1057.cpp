@@ -39,7 +39,7 @@ public:
 
 private:
 	vector<int> stack;
-	array<int, 100001> bITree{};
+	array<int, 100001> bITree{};//bITree[i]=sum foreach [i-Lowbit(i)+1,i]
 	int Lowbit(int value) { return value & -value; }
 	void Update(int modifyPos, int value)
 	{
