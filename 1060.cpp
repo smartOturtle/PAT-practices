@@ -8,13 +8,13 @@ int Magnititudes(const string& num)
 	if (num.find("0.")!=string::npos)
 	{
 		int pos = num.substr(2).find_first_not_of('0');
-		if (pos == -1)return 0;
+		if (pos == string::npos)return 0;
 		else return -pos;
 	}
 	else
 	{
 		int last = num.find('.');
-		if (last == -1)last = num.size();
+		if (last == string::npos)last = num.size();
 		return last - num.find_first_not_of('0');
 	}
 }
@@ -22,9 +22,10 @@ string ToScientificNotation(const string& num, int digitSize)
 {
 	string s;
 	s += "0.";
+	int magnititudes = Magnititudes(num);
 	int cnt = 0;
 	int begin = num.find_first_not_of('0');
-	if(Magnititudes(num)<0)begin = -Magnititudes(num) + 2;
+	if(magnititudes<0)begin = -magnititudes + 2;
 	for (int i = begin;; i++)
 	{
 		if (i >= num.size())s.push_back('0');
@@ -36,7 +37,7 @@ string ToScientificNotation(const string& num, int digitSize)
 		if (++cnt == digitSize)break;
 	}
 	s.push_back('*');
-	s += "10^" + to_string(Magnititudes(num));
+	s += "10^" + to_string(magnititudes);
 	return s;
 }
 int main(int argc, char *argv[])
