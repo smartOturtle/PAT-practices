@@ -22,7 +22,7 @@ string ToScientificNotation(const string& num, int digitSize)
 		s.push_back(*iter);
 		if(++cnt>=digitSize)break;
 	}
-	if(digitSize>cnt)s += string(digitSize - cnt, '0');
+	string(digitSize - cnt, '0');
 	s += "*10^" + to_string(Magnititudes(num));
 	return s;
 }
