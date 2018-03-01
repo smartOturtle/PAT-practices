@@ -5,9 +5,9 @@
 using namespace std;
 int Magnititudes(const string& num)
 {
-	auto dotPos = find(num.begin(),num.end(),'.');
 	auto firstNotZeroPos = find_if(num.begin(), num.end(), [](char c) { return c != '0'&&c!='.'; });
 	if (firstNotZeroPos==num.end()) return 0;
+	auto dotPos = find(num.begin(), num.end(), '.');
 	if (firstNotZeroPos < dotPos) return dotPos - firstNotZeroPos;
 	return dotPos - firstNotZeroPos + 1;
 }
