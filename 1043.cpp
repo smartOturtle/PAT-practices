@@ -1,3 +1,4 @@
+#define  _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -5,17 +6,17 @@ using namespace std;
 
 struct Node
 {
-	Node* left=nullptr;
-	Node* right=nullptr;
+	Node* left = nullptr;
+	Node* right = nullptr;
 	int data;
-	Node(){}
+	Node() {}
 };
 vector<Node> seq;
 vector<int> preorder;
 vector<int> postorder;
 void Travelsal(Node* n)
 {
-	if(n==nullptr)return;
+	if (n == nullptr)return;
 	preorder.push_back(n->data);
 	Travelsal(n->left);
 	Travelsal(n->right);
@@ -38,12 +39,12 @@ void Yes()
 		cout << " " << postorder[i];
 	}
 }
-void Swap(Node* n)
+void Reverse(Node* n)
 {
-	if(n==nullptr)return;
+	if (n == nullptr)return;
 	swap(n->left, n->right);
-	Swap(n->left);
-	Swap(n->right);
+	Reverse(n->left);
+	Reverse(n->right);
 }
 int main(int argc, char* argv[])
 {
@@ -52,16 +53,16 @@ int main(int argc, char* argv[])
 	seq.resize(size);
 	for (int i = 0; i < size; ++i)
 	{
-		cin >>seq[i].data ;
+		cin >> seq[i].data;
 	}
 	for (int i = 1; i < size; ++i)
 	{
 		auto iter = &seq[0];
 		while (true)
 		{
-			if(seq[i].data<iter->data)
+			if (seq[i].data<iter->data)
 			{
-				if(iter->left != nullptr)iter = iter->left;
+				if (iter->left != nullptr)iter = iter->left;
 				else
 				{
 					iter->left = &seq[i];
@@ -80,10 +81,10 @@ int main(int argc, char* argv[])
 		}
 	}
 	Travelsal(&seq[0]);
-	if(IsSame())Yes();
+	if (IsSame())Yes();
 	else
 	{
-		Swap(&seq[0]);
+		Reverse(&seq[0]);
 		postorder.clear();
 		preorder.clear();
 		Travelsal(&seq[0]);
