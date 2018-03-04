@@ -14,7 +14,7 @@ public class Main {
             BigInteger bInt=new BigInteger(b);
             BigInteger cInt=new BigInteger(c);
             System.out.print("Case #"+(i+1)+": ");
-            if(aInt.add(bInt).compareTo(cInt)==1) System.out.println("true");
+            if(aInt.add(bInt).compareTo(cInt)>0) System.out.println("true");
             else System.out.println("false");
         }
     }
