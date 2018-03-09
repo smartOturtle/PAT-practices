@@ -23,7 +23,6 @@ int main(int argc, char* argv[])
 		}
 		c = next;
 	}
-	if(!word.empty())counter[word]++;
 	auto& maxWord= *max_element(counter.begin(), counter.end(),
 		[](const pair<string,int>& lhs, const pair<string, int>& rhs)
 	{
