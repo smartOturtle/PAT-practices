@@ -15,12 +15,12 @@ void BFS(int id,int maxLayer)
 	int layer = 1, last = eachFollowers[id].size(),cnt=0;
 	for (int i=0;layer<maxLayer&&!q.empty();++i)
 	{
-		for (auto observer : eachFollowers[q.front()])
+		for (auto follower : eachFollowers[q.front()])
 		{
-			if(!visted[observer])
+			if(!visted[follower])
 			{
-				q.push(observer);
-				visted[observer] = true;
+				q.push(follower);
+				visted[follower] = true;
 				cnt++;
 			}
 		}
@@ -59,4 +59,3 @@ int main(int argc, char* argv[])
 		BFS(queryId - 1, maxLayer);
 	}
 }
-
