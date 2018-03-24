@@ -8,25 +8,22 @@ using namespace std;
 int userSize, problemSize, submissionSize;
 struct User
 {
-	enum Status
-	{
-		NotSubmitted = -2, NotPassed = -1
-	};
+	static constexpr int notCommitted = -1;
 	bool hasPassed;
 	vector<int> partialScores;
 	int totalScore;
 	int perfectAnswerSize;
 	User() :
-		hasPassed(false), partialScores(problemSize, NotSubmitted), totalScore(0), perfectAnswerSize(0)
+		hasPassed(false), partialScores(problemSize,notCommitted), totalScore(0), perfectAnswerSize(0)
 	{
 	}
 	void Update(int score, int problemIdx, int perfectScore)
 	{
 		if (score >= 0)hasPassed = true;
+		partialScores[problemIdx] = max(partialScores[problemIdx], 0);
 		if (partialScores[problemIdx]<score)
 		{
-			if (partialScores[problemIdx] > 0)totalScore+=(score- partialScores[problemIdx]);
-			else if(score>0){ totalScore += score; }
+			totalScore += (score - partialScores[problemIdx]);
 			partialScores[problemIdx] = score;
 			if (score == perfectScore)perfectAnswerSize++;
 		}
@@ -37,17 +34,8 @@ struct User
 		for (auto partialScore : partialScores)
 		{
 			cout << " ";
-			switch (partialScore)
-			{
-			case NotSubmitted:
-				cout << '-';
-				break;
-			case NotPassed:
-				cout << 0;
-				break;
-			default:
-				cout << partialScore;
-			}
+			if (partialScore == notCommitted)cout << '-';
+			else { cout << partialScore; }
 		}
 		cout << '\n';
 	}
@@ -83,7 +71,7 @@ int main()
 	vector<idUserIter> sortedIters;
 	for (auto iter = users.begin(); iter != users.end(); ++iter)
 	{
-		if(iter->second.hasPassed)sortedIters.push_back(iter);
+		if (iter->second.hasPassed)sortedIters.push_back(iter);
 	}
 	sort(sortedIters.begin(), sortedIters.end(), Cmp);
 	int rank = 1, preScore = -1, sameScoreSize = 0;
