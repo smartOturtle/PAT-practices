@@ -12,8 +12,8 @@ void BFS(int id,int maxLayer)
 	queue<int> q;
 	q.push(id);
 	visted[id] = true;
-	int layer = 1, last = eachFollowers[id].size(),cnt=0;
-	for (int i=0;layer<maxLayer&&!q.empty();++i)
+	int layer = 0, last = 0,cnt=0;
+	for (int i=0;layer<maxLayer&&!q.empty();++i)//隐含的从1开始计数
 	{
 		for (auto follower : eachFollowers[q.front()])
 		{
