@@ -99,9 +99,9 @@ int main(int argc, char* argv[])
 	{
 		string s;
 		sort(school.begin(), school.end());
-		for (auto admmitedApplicantId : school)
+		for (auto admittedApplicantId : school)
 		{
-			s += to_string(admmitedApplicantId);
+			s += to_string(admittedApplicantId);
 			s.push_back(' ');
 		}
 		if(!s.empty())s.pop_back();
