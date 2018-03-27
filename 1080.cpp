@@ -70,44 +70,31 @@ int main(int argc, char* argv[])
 
 	for (auto && sameRankGroup : rankList)
 	{
-		if(sameRankGroup.size()==1)
+		const auto needQuery = 1, notAvailable = 2, avaiable = 3;
+		vector<int> schoolStatus(schoolSize, needQuery);
+		for (auto applicantPtr : sameRankGroup)
 		{
-			for (auto choice : sameRankGroup.front()->choices)
+			for (auto choice : applicantPtr->choices)
 			{
-				if(schools[choice].size()<schoolQuotas[choice])
+				if (schoolStatus[choice] == needQuery)
 				{
-					schools[choice].push_back(sameRankGroup.front()->id);
+					if (schools[choice].size()<schoolQuotas[choice])
+					{
+						schools[choice].push_back(applicantPtr->id);
+						schoolStatus[choice] = avaiable;
+						break;
+					}
+					schoolStatus[choice] = notAvailable;
+				}
+				else if (schoolStatus[choice] == avaiable)
+				{
+					schools[choice].push_back(applicantPtr->id);
 					break;
 				}
 			}
 		}
-		else if(sameRankGroup.size()>1)
-		{
-			const auto needQuery = 1, notAvailable = 2, avaiable = 3;
-			vector<int> schoolStatus(schoolSize, needQuery);
-			for (auto applicantPtr:sameRankGroup)
-			{
-				for (auto choice : applicantPtr->choices)
-				{
-					if(schoolStatus[choice]==needQuery)
-					{
-						if (schools[choice].size()<schoolQuotas[choice])
-						{
-							schools[choice].push_back(applicantPtr->id);
-							schoolStatus[choice] = avaiable;
-							break;
-						}
-						else schoolStatus[choice] = notAvailable;
-					}
-					else if(schoolStatus[choice] == avaiable)
-					{
-						schools[choice].push_back(applicantPtr->id);
-						break;
-					}
-				}
-			}
-		}
 	}
+
 	for (auto && school : schools)
 	{
 		string s;
