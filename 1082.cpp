@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 			if(magnititudeStringMap.find(i)!=magnititudeStringMap.end())
 			{
 				if (i == 4)hasSetWan = true;
-				else if(i>=4&&i<8&&!hasSetWan)
+				else if(i>4&&i<8&&!hasSetWan)
 				{
 					s.push_front(magnititudeStringMap[4]);
 					hasSetWan = true;
