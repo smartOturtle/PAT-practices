@@ -21,17 +21,8 @@ int main(int argc, char* argv[])
 	int maxLength = 0;
 	for (int i = 0; i < seq.size(); ++i)
 	{
-		int left=i, right=seq.size();
-		while (left<right)
-		{
-			int mid = (right + left) / 2;
-			if(seq[mid]<=seq[i]*p)
-			{
-				maxLength = max(maxLength, mid - i+1);
-				left = mid+1;
-			}
-			else { right = mid; }
-		}
+		auto pos = upper_bound(seq.begin() + i, seq.end(), seq[i] * p);
+		maxLength = max<int>(maxLength, pos - (seq.begin() + i));
 	}
-	cout <<maxLength;
+	cout << maxLength;
 }
