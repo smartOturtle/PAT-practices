@@ -37,10 +37,6 @@ struct Road
         }
         return distance < road.distance;
     }
-    bool operator==(const Road& road)const
-    {
-        return happiness == road.happiness&&distance == road.distance;
-    }
     Road operator+(const Road& road)const
     {
         Road result = road;
