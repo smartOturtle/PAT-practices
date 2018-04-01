@@ -50,8 +50,7 @@ void Operation(Ratio lhs, Ratio rhs,char c,function<Ratio(Ratio,Ratio)> f)
     printf(" %c ",c);
     Print(rhs);
     cout << " = ";
-    auto result = f(lhs, rhs);
-    Print(result);
+    Print(f(lhs, rhs));
     cout << '\n';
 }
 int main(int argc, char* argv[])
