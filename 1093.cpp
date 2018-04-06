@@ -10,10 +10,10 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    long long cnt = 0;
     string s;
     cin >> s;
     int pCnt=0,tCnt= count(s.begin(), s.end(), 'T');
+    long long cnt = 0;
     for (auto value : s)
     {
         if (value == 'P')pCnt++;
