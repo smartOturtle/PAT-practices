@@ -47,9 +47,10 @@ int main(int argc, char* argv[])
     else
     {
         cout << "Heap Sort\n";
-        auto heapEnd = is_heap_until(after.begin(), after.end());
-        pop_heap(after.begin(), heapEnd);
-    }
+        pop_heap(after.begin(), is_heap_until(after.begin(), after.end()));
+        //push_heap = swim
+        //pop_heap = sink
+    }   
     cout << after.front();
     for (int i = 1; i < after.size(); ++i)
     {
