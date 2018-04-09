@@ -1,92 +1,67 @@
-#include<iostream>
+#define  _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
 #include <vector>
-#include <algorithm>
-#include <stack>
+#include <unordered_map>
 #include <queue>
+#include <map>
+#include <algorithm>
 using namespace std;
+vector<int> postorder;
+vector<int> inorder;
 
 struct Node
 {
-  int data;
-  int left;
-  int right;
-  explicit Node(int data_):data(data_),left(-1),right(-1){}
-};
-using Section = pair<int, int>;
-struct PartitonPoint
-{
-  int idx;
-  Section left{-1,-1};
-  Section right{ -1,-1 };
-
-  explicit PartitonPoint(int idx, Section left = { -1,-1 }, Section right = { -1,-1 }) :
-    idx(idx), left(left), right(right)
-  {
-  }
-};
-vector<int> postorder;
-vector<Node> inorder;
-int FindInorderIdx(int value)
-{
-  for (int i = 0; i < inorder.size(); ++i)
-    if (inorder[i].data == value)return i;
-  return -1;
-}
-void Traversal(int root)
-{
-  cout << inorder[root].data;
-  queue<int> q;
-  if(inorder[root].left!=-1)q.push(inorder[root].left);
-  if (inorder[root].right != -1)q.push(inorder[root].right);
-  while (!q.empty())
-  {
-    cout <<" "<< inorder[q.front()].data;
-    if (inorder[q.front()].left != -1)q.push(inorder[q.front()].left);
-    if (inorder[q.front()].right != -1)q.push(inorder[q.front()].right);
-    q.pop();
-  }
-}
-int main()
-{
-  int size;
-  cin >> size;
-  postorder.resize(size);
-  for (int i = 0; i < size; ++i)
-    cin >> postorder[i];
-  for (int i = 0; i < size; ++i)
-  {
     int data;
-    cin >> data;
-    inorder.emplace_back(data);
-  }
-  stack<PartitonPoint> points;
-  auto rootIdx = FindInorderIdx(postorder.back());
-  postorder.pop_back();
-  points.push(PartitonPoint{ rootIdx,{ 0,rootIdx },{ rootIdx + 1,size } });
-  while (!postorder.empty())
-  {
-    auto idx = FindInorderIdx(postorder.back());
-    Section section;
-    bool isRight;
-    while (true)
+    Node* left=nullptr;
+    Node* right = nullptr;
+    explicit Node(int data):data(data)
     {
-      if (idx > points.top().idx)
-      {
-        section = points.top().right;
-        isRight = true;
-      }
-      else
-      {
-        section = points.top().left;
-        isRight = false;
-      }
-      if (idx >= section.first&&idx<section.second)break;
-      points.pop();
+        
     }
-    if (isRight) { inorder[points.top().idx].right = idx; }
-    else inorder[points.top().idx].left = idx;
-    points.push(PartitonPoint{ idx,{section.first,idx},{idx + 1,section.second} });
-    postorder.pop_back();
-  }
-  Traversal(rootIdx);
+};
+Node* BuildTree(int postIdx,int inBegin,int inEnd)
+{
+    if (postIdx <0 || inBegin >= inEnd)return nullptr;
+    int inPos = inBegin;
+    for (; inPos < inEnd; ++inPos)
+    {
+        if(postorder[postIdx]==inorder[inPos])break;
+    }
+    auto n = new Node(postorder[postIdx]);
+    n->left = BuildTree(postIdx - (inEnd - inPos), inBegin, inPos);
+    n->right = BuildTree(postIdx - 1,inPos + 1, inEnd);
+    return n;
+}
+string s;
+void Travelsal(Node* n)
+{
+    queue<Node*> q;
+    q.push(n);
+    while (!q.empty())
+    {
+        if (q.front()->left != nullptr)q.push(q.front()->left);
+        if (q.front()->right != nullptr)q.push(q.front()->right);
+        s += to_string(q.front()->data);
+        s.push_back(' ');
+        q.pop();
+    }
+}
+int main(int argc, char* argv[])
+{
+    int nodeSize;
+    cin >> nodeSize;
+    postorder.resize(nodeSize);
+    inorder.resize(nodeSize);
+    for (int i = 0; i < nodeSize; ++i)
+    {
+        cin >> postorder[i];
+    }
+    for (int i = 0; i < nodeSize; ++i)
+    {
+        cin >> inorder[i];
+    }
+    Travelsal(BuildTree(postorder.size()-1, 0, inorder.size()));
+    if(!s.empty())s.pop_back();
+    cout << s;
 }
