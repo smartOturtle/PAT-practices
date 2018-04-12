@@ -10,7 +10,7 @@
 using namespace std;
 //There are two simple ways
 //First method,we can just reverse the travelsal sequence
-//like first visit left rather right
+//like first visit right rather left
 //Second method ,Construct a Type which just reverse the left and the right
 //postion in the struct
 //this is only makes sense in standard layout object or called plain old data
