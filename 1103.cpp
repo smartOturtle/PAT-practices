@@ -9,10 +9,10 @@
 #include <numeric>
 using namespace std;
 deque<int> perfect;
-deque<int> temp;
 int num, factorSize, p;
 void DFS(int factor,int num,int size)
 {
+    static deque<int> temp;
     if (num == 0 && size == 0 )
     {
         if(accumulate(perfect.begin(),perfect.end(),0)<accumulate(temp.begin(), temp.end(),0)||
