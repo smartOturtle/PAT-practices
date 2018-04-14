@@ -3,31 +3,34 @@
 #include <algorithm>
 #include <vector>
 using namespace std;
-vector<int> coins;
+vector<int> values;
 vector<int> solution;
 void DFS(int idx, int amount)
 {
-    static vector<int> accumulateCoins;
-    if (idx >= coins.size() || coins[idx]>amount)return;
-    accumulateCoins.push_back(coins[idx]);
-    int remain = amount - coins[idx];
-    if (remain>0 && coins[idx] <= remain)
+    static vector<int> path;
+    path.push_back(values[idx]);
+    int remain = amount - values[idx];
+    if (remain == 0)
+    {
+        solution = path;
+        return path.clear();
+    }
+    if (remain>= values[idx])
     {
         int lastNum = -1;
-        for (int i = idx + 1; i < coins.size(); ++i)
+        for (int i = idx + 1; i < values.size(); ++i)
         {
-            if (lastNum == coins[i])continue;
-            DFS(i, remain);
-            lastNum = coins[i];
+            if (lastNum != values[i])
+            {
+                DFS(i, remain);
+                lastNum = values[i];
+            }
             if (!solution.empty())return;
         }
     }
-    else if (remain == 0)solution = accumulateCoins;
-    accumulateCoins.pop_back();
-    for (int i = idx+1; i < coins.size(); ++i)
-    {
-        if(coins[i]!=coins[idx])return DFS(i,amount); 
-    }
+    path.pop_back();
+    for (int i = idx + 1; i < values.size(); ++i)
+        if (values[i] != values[idx])return DFS(i, amount);
 }
 int main(int argc, char* argv[])
 {
@@ -37,9 +40,9 @@ int main(int argc, char* argv[])
     {
         int value;
         scanf("%d", &value);
-        if (value <= amount)coins.push_back(value);
+        if (value <= amount)values.push_back(value);
     }
-    sort(coins.begin(), coins.end());
+    sort(values.begin(), values.end());
     DFS(0, amount);
     if (solution.empty())cout << "No Solution";
     else
