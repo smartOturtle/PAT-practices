@@ -7,7 +7,7 @@
 #include <functional>
 using namespace std;
 vector<int> hobitClusters(1001);
-//0 as nonlegeal
+//0 as illegal
 int Find(int idx)
 {
     if (hobitClusters[idx] <=0)return idx;
