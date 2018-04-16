@@ -7,7 +7,7 @@
 #include <functional>
 using namespace std;
 vector<int> clusters(1001);
-//0 as nonlegeal
+//0 as illegal
 int Find(int idx)
 {
     if (clusters[idx] <=0)return idx;
