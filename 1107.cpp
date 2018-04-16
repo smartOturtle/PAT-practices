@@ -6,21 +6,21 @@
 #include <unordered_map>
 #include <functional>
 using namespace std;
-vector<int> hobitClusters(1001);
-//0 as illegal
+vector<int> clusters(1001);
+//0 as nonlegeal
 int Find(int idx)
 {
-    if (hobitClusters[idx] <=0)return idx;
-    return hobitClusters[idx] = Find(hobitClusters[idx]);
+    if (clusters[idx] <=0)return idx;
+    return clusters[idx] = Find(clusters[idx]);
 }
 bool Union(int lhs,int rhs)
 {
     auto lhsRoot = Find(lhs);
     auto rhsRoot = Find(rhs);
     if (lhsRoot == rhsRoot)return false;
-    if (hobitClusters[lhsRoot] > hobitClusters[rhsRoot])swap(lhsRoot, rhsRoot);
-    hobitClusters[lhsRoot] += hobitClusters[rhsRoot];
-    hobitClusters[rhsRoot] = lhsRoot;
+    if (clusters[lhsRoot] > clusters[rhsRoot])swap(lhsRoot, rhsRoot);
+    clusters[lhsRoot] += clusters[rhsRoot];
+    clusters[rhsRoot] = lhsRoot;
     return true;
 }
 int main(int argc, char* argv[])
@@ -40,12 +40,12 @@ int main(int argc, char* argv[])
         {
             Union(hobits.front(), hobits[j]);
         }
-        hobitClusters[Find(hobits.front())]--;
+        clusters[Find(hobits.front())]--;
     }
     vector<int> clustersSize;
-    for (auto hobitCluster : hobitClusters)
+    for (auto cluster : clusters)
     {
-        if (hobitCluster < 0)clustersSize.push_back(-hobitCluster);
+        if (cluster < 0)clustersSize.push_back(-cluster);
     }
     sort(clustersSize.begin(), clustersSize.end(), greater<int>());
     cout << clustersSize.size()<<'\n';
@@ -55,3 +55,4 @@ int main(int argc, char* argv[])
         cout << " " << clustersSize[i];
     }
 }
+
