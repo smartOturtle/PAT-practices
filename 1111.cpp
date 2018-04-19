@@ -16,7 +16,16 @@ struct Street
     bool IsValid()const { return length < NotValid; }
     Street() :length(NotValid), time(NotValid), span(0) {}
     Street(int length, int time) :length(length), time(time), span(1) {}
-
+    bool IsFaster(const Street& rhs)const
+    {
+        if (time == rhs.time)return span < rhs.span;
+        return time < rhs.time;
+    }
+    bool IsShorter(const Street& rhs)const
+    {
+        if (length == rhs.length)return time < rhs.time;
+        return length < rhs.length;
+    }
     Street Extend(const Street& street)const
     {
         Street result = street;
@@ -26,16 +35,7 @@ struct Street
         return result;
     }
 };
-bool IsFaster(const Street& lhs, const Street& rhs)
-{
-    if (lhs.time == rhs.time)return lhs.span < rhs.span;
-    return lhs.time < rhs.time;
-}
-bool IsShorter(const Street& lhs, const Street& rhs)
-{
-    if (lhs.length == rhs.length)return lhs.time < rhs.time;
-    return lhs.length < rhs.length;
-}
+//pass const ref is equal to pass value
 pair<Street, deque<int>> Dijkstra(vector<vector<Street>> map, function<bool(Street, Street)> p, int from, int to)
 {
     vector<int> pre(map.size(), -1);
@@ -48,7 +48,7 @@ pair<Street, deque<int>> Dijkstra(vector<vector<Street>> map, function<bool(Stre
         Street minStreet;
         for (int i = 0; i < map.size(); ++i)
         {
-            if (!visited[i]&& p(dist[i],minStreet))
+            if (!visited[i] && p(dist[i], minStreet))
             {
                 idx = i;
                 minStreet = dist[idx];
@@ -67,7 +67,7 @@ pair<Street, deque<int>> Dijkstra(vector<vector<Street>> map, function<bool(Stre
     }
     auto street = dist[to];
     deque<int> via;
-    if(from!=to)for (int i = to; i != -1; i = pre[i])via.push_front(i);
+    if (from != to)for (int i = to; i != -1; i = pre[i])via.push_front(i);
     return make_pair(street, via);
 }
 int main(int argc, char* argv[])
@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
     }
     int from, to;
     cin >> from >> to;
-    auto shortest = Dijkstra(map, IsShorter, from, to);
-    auto fastest = Dijkstra(map, IsFaster, from, to);
+    auto shortest = Dijkstra(map, &Street::IsShorter, from, to);
+    auto fastest = Dijkstra(map, &Street::IsFaster, from, to);
     if (fastest.second == shortest.second)
     {
         cout << "Distance = " << shortest.first.length << "; Time = " << fastest.first.time << ": " << from;
@@ -100,4 +100,3 @@ int main(int argc, char* argv[])
         for (auto && idx : fastest.second)cout << " -> " << idx;
     }
 }
-
