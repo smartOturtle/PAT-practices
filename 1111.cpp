@@ -36,19 +36,25 @@ struct Street
     }
 };
 //pass const ref is equals to pass value
-pair<Street, deque<int>> Dijkstra(vector<vector<Street>> map, function<bool(Street, Street)> p, int from, int to)
+template<typename T,typename IdxType=int>
+pair<T, deque<IdxType>> Dijkstra(vector<vector<T>> map, 
+                                                function<bool(T, T)> binaryPred,
+                                                function<T(T,T)> plus,
+                                                T init,
+                                                IdxType from,
+                                                IdxType to)
 {
-    vector<int> pre(map.size(), -1);
+    vector<IdxType> pre(map.size(), -1);
     deque<bool> visited(map.size());
     auto dist = map[from];
-    dist[from] = Street(0, 0);
+    dist[from] = init;
     while (true)
     {
-        int idx = -1;
-        Street minStreet;
-        for (int i = 0; i < map.size(); ++i)
+        IdxType idx = -1;
+        T minStreet;
+        for (IdxType i = 0; i < map.size(); ++i)
         {
-            if (!visited[i] && p(dist[i], minStreet))
+            if (!visited[i] && binaryPred(dist[i], minStreet))
             {
                 idx = i;
                 minStreet = dist[idx];
@@ -56,18 +62,18 @@ pair<Street, deque<int>> Dijkstra(vector<vector<Street>> map, function<bool(Stre
         }
         if (idx == -1)break;
         visited[idx] = true;
-        for (int i = 0; i < map.size(); ++i)
+        for (IdxType i = 0; i < map.size(); ++i)
         {
-            if (p(dist[idx].Extend(map[idx][i]), dist[i]))
+            if (binaryPred(plus(dist[idx],map[idx][i]), dist[i]))
             {
-                dist[i] = dist[idx].Extend(map[idx][i]);
+                dist[i] = plus(dist[idx], map[idx][i]);
                 pre[i] = idx;
             }
         }
     }
     auto street = dist[to];
-    deque<int> via;
-    if (from != to)for (int i = to; i != -1; i = pre[i])via.push_front(i);
+    deque<IdxType> via;
+    if (from != to)for (IdxType i = to; i != -1; i = pre[i])via.push_front(i);
     return make_pair(street, via);
 }
 int main(int argc, char* argv[])
@@ -84,8 +90,8 @@ int main(int argc, char* argv[])
     }
     int from, to;
     cin >> from >> to;
-    auto shortest = Dijkstra(map, &Street::IsShorter, from, to);
-    auto fastest = Dijkstra(map, &Street::IsFaster, from, to);
+    auto shortest = Dijkstra<Street>(map, &Street::IsShorter, &Street::Extend, Street(0, 0), from, to);
+    auto fastest = Dijkstra<Street>(map, &Street::IsFaster, &Street::Extend, Street(0, 0), from, to);
     if (fastest.second == shortest.second)
     {
         cout << "Distance = " << shortest.first.length << "; Time = " << fastest.first.time << ": " << from;
