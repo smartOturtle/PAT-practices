@@ -35,7 +35,7 @@ struct Street
         return result;
     }
 };
-//pass const ref is equal to pass value
+//pass const ref is equals to pass value
 pair<Street, deque<int>> Dijkstra(vector<vector<Street>> map, function<bool(Street, Street)> p, int from, int to)
 {
     vector<int> pre(map.size(), -1);
