@@ -38,12 +38,12 @@ struct Street
 //pass const ref is equals to pass value
 template<typename T,typename IdxType=int>
 pair<T, deque<IdxType>> Dijkstra(
-                                                        vector<vector<T>> map, 
-                                                        IdxType from,
-                                                        IdxType to,
-                                                        T init=T(),
-                                                        function<bool(T, T)> binaryPred=less<T>(),
-                                                        function<T(T, T)> plusFunc=plus<T>())
+                                 vector<vector<T>> map, 
+                                 IdxType from,
+                                 IdxType to,
+                                 T init=T(),
+                                 function<bool(T, T)> binaryPred=less<T>(),
+                                 function<T(T, T)> plusFunc=plus<T>())
 {
     vector<IdxType> pre(map.size(), -1);
     deque<bool> visited(map.size());
