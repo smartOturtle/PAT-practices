@@ -72,10 +72,10 @@ pair<T, deque<IdxType>> Dijkstra(
             }
         }
     }
-    auto street = dist[to];
+    auto result = dist[to];
     deque<IdxType> via;
     if (from != to)for (IdxType i = to; i != IdxType(-1); i = pre[i])via.push_front(i);
-    return make_pair(street, via);
+    return make_pair(result, via);
 }
 int main(int argc, char* argv[])
 {
