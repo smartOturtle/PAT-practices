@@ -87,13 +87,14 @@ int main(int argc, char* argv[])
     while (true)
     {
         int v = -1;
+        Road min;
         for (int i = 0; i < citySize; ++i)
         {
-            if (!visited[i] && dist[i].IsValid())
-                if (v == -1 || dist[i].distance<dist[v].distance)
-                {
-                    v = i;
-                }
+            if (!visited[i]&&dist[i]<min)
+            {
+                v = i;
+                min=dist[i]
+            }
         }
         if (v == -1)break;
         visited[v] = true;
