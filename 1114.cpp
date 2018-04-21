@@ -12,6 +12,7 @@ using namespace std;
 
 struct Person
 {
+    //if rootIdx <0 itself is a root and the abs of rootIdx is the size of the group
     int rootIdx=-1;
     int m_estate=0;
     int area=0;
