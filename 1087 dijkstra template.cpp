@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
             if (!visited[i]&&dist[i]<min)
             {
                 v = i;
-                min=dist[i]
+                min=dist[i];
             }
         }
         if (v == -1)break;
