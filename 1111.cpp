@@ -52,13 +52,13 @@ pair<T, deque<IdxType>> Dijkstra(
     while (true)
     {
         IdxType idx = -1;
-        T minStreet;
+        T minValue;
         for (IdxType i = 0; i < map.size(); ++i)
         {
             if (!visited[i] && binaryPred(dist[i], minStreet))
             {
                 idx = i;
-                minStreet = dist[idx];
+                minValue = dist[idx];
             }
         }
         if (idx == IdxType(-1))break;
