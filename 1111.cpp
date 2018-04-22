@@ -38,7 +38,7 @@ struct Street
 //pass const ref is equals to pass value
 template<typename T,typename IdxType=int>
 pair<T, deque<IdxType>> Dijkstra(
-                                 vector<vector<T>> map, 
+                                 vector<vector<T>>& map, 
                                  IdxType from,
                                  IdxType to,
                                  T init=T(),
