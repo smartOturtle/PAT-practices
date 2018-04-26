@@ -11,8 +11,6 @@
 #include <deque>
 #include <queue>
 using namespace std;
-vector<int> inorder;
-vector<int> postorder;
 
 struct Node
 {
@@ -25,13 +23,16 @@ template<typename Iter>
 Node* BuildTree(Iter postBegin,Iter postEnd,Iter inBegin,Iter inEnd)
 {
     Node* n = nullptr;
-    if (postEnd==postBegin)return n;
-    auto inPos = find(inBegin, inEnd, *(--postEnd));
-    if(inPos!=inEnd)
+    if (postEnd!=postBegin)
     {
-        n = new Node(*inPos);
-        n->left = BuildTree(postBegin, postBegin + (inPos - inBegin), inBegin, inPos);
-        n->right = BuildTree(postEnd -(inEnd-inPos-1) , postEnd, inPos + 1, inEnd);
+        auto inPos = find(inBegin, inEnd, *(postEnd-1));
+        if (inPos != inEnd)
+        {
+            n = new Node(*inPos);
+            n->left = BuildTree(postBegin, postBegin + (inPos - inBegin), inBegin, inPos);
+            --postEnd;
+            n->right = BuildTree(postEnd - (inEnd - inPos - 1), postEnd, inPos + 1, inEnd);
+        }
     }
     return n;
 }
@@ -50,8 +51,8 @@ void ZigzagTravelsal(Node* root)
         q.pop();
         if(i==layerSize)
         {
-            seqs.push_back(temp);
-            temp.clear();
+            seqs.emplace_back(vector<int>());
+            swap(seqs.back(), temp);
             layerSize = q.size();
             i = 0;
         }
@@ -59,22 +60,18 @@ void ZigzagTravelsal(Node* root)
     cout << seqs.front().front();
     for (int i = 1; i < seqs.size(); ++i)
     {
-        if (i % 2 == 0)reverse(seqs[i].begin(), seqs[i].end());
-        for (auto value : seqs[i])
-        {
-            cout << " " << value;
-        }
+        if (i % 2 == 0)for_each(seqs[i].rbegin(), seqs[i].rend(), [](int value) { cout << " " << value; });
+        else for (auto value : seqs[i])cout << " " << value;
     }
 }
 int main(int argc, char* argv[])
 {
     int numSize;
     cin >> numSize;
-    inorder.resize(numSize);
-    postorder.resize(numSize);
+    vector<int> inorder(numSize);
+    vector<int> postorder(numSize);
     for (auto&& value : inorder)cin >> value;
     for (auto&& value : postorder)cin >> value;
-    auto root= BuildTree(postorder.begin(), postorder.end(), inorder.begin(), inorder.end());
-    ZigzagTravelsal(root);
+    ZigzagTravelsal(BuildTree(postorder.begin(), postorder.end(), inorder.begin(), inorder.end()));
 }
 
