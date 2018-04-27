@@ -25,7 +25,7 @@ int root;
 void Travelsal(int idx)
 {
     if(idx<0)return;
-    bool hasParenthese = (idx!=root&&(nodes[idx].left>=0 || nodes[idx].right>=0));
+    bool hasParenthese = idx!=root&&nodes[idx].right>=0;
     if (hasParenthese)cout << '(';
     Travelsal(nodes[idx].left);
     cout<<nodes[idx].data;
