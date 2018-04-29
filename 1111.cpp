@@ -13,9 +13,9 @@ struct Street
     int length;
     int time;
     int span;
-    bool IsValid()const { return length < NotValid; }
     Street() :length(NotValid), time(NotValid), span(0) {}
     Street(int length, int time) :length(length), time(time), span(1) {}
+    bool IsValid()const { return length < NotValid; }
     bool IsFaster(const Street& rhs)const
     {
         if (time == rhs.time)return span < rhs.span;
