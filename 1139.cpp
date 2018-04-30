@@ -23,11 +23,6 @@ struct Person
 unordered_map<string, Person> people;
 void Query(string lhsId,string rhsId)
 {
-    if (people.find(lhsId) == people.end() || people.find(rhsId) == people.end())
-    {
-        cout << "0\n";
-        return;
-    }
     auto& lhs = people[lhsId];
     auto& rhs = people[rhsId];
     vector<pair<string, string>> pairs;
@@ -46,10 +41,7 @@ void Query(string lhsId,string rhsId)
     }
     sort(pairs.begin(), pairs.end());
     cout << pairs.size()<<'\n';
-    for (auto&& pair : pairs)
-    {
-        cout << pair.first << " " << pair.second << '\n';
-    }
+    for (auto&& pair : pairs)cout << pair.first << " " << pair.second << '\n';
 }
 int main(int argc, char* argv[])
 {
