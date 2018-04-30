@@ -11,40 +11,42 @@
 #include <deque>
 #include <queue>
 using namespace std;
-bool IsCollide(pair<int,int> lhs,pair<int,int> rhs)
+
+using Item = pair<int,int>;
+struct Cmp
 {
-    if (lhs.first == rhs.first || lhs.second == rhs.second)return true;
-    if (abs(lhs.first - rhs.first) ==abs (lhs.second - rhs.second))return true;
-    return false;
-}
+    bool operator()(Item lhs,Item rhs)const
+    {
+        if (lhs.second == rhs.second)return lhs.first < rhs.first;
+        return lhs.second > rhs.second;
+    }
+};
 int main(int argc, char* argv[])
 {
-    int querySize;
-    cin >> querySize;
-    for (int i = 0; i < querySize; ++i)
+    int querySize, maxNum;
+    cin >> querySize >> maxNum;
+    int queryItemId;
+    cin >> queryItemId;
+    set<Item,Cmp> itemRank;
+    unordered_map<int, decltype(itemRank)::iterator> itemPosMap{{queryItemId,itemRank.insert({ queryItemId,1 }) .first}};
+    for (int i = 1; i < querySize; ++i)
     {
-        int queenSize;
-        cin >> queenSize;
-        vector<pair<int, int>> nQueenPos;
-        for (int j = 1; j <= queenSize; ++j)
+        cin >> queryItemId;
+        cout << queryItemId << ":";
+        int j = 1;
+        for (auto item : itemRank)
         {
-            int rowIdx;
-            cin >> rowIdx;
-            nQueenPos.push_back({ j,rowIdx });
+            if(j>maxNum)break;
+            cout << " " << item.first;
+            ++j;
         }
-        bool hasCollide = false;
-        for (int j = 0; j < queenSize; ++j)
+        int preFreq = 0;
+        if(itemPosMap.find(queryItemId)!=itemPosMap.end())
         {
-            for (int k = j+1; k < queenSize; ++k)
-            {
-                hasCollide = IsCollide(nQueenPos[j], nQueenPos[k]);
-                if(hasCollide){goto out;}
-            }
+            preFreq = itemPosMap[queryItemId]->second;
+            itemRank.erase(itemPosMap[queryItemId]);
         }
-        out:
-        if (hasCollide)cout << "NO\n";
-        else { cout << "YES\n"; }
+        itemPosMap[queryItemId] = itemRank.insert({ queryItemId,preFreq + 1 }).first;
+        cout << '\n';
     }
 }
-
-
