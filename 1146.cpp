@@ -46,15 +46,13 @@ int main(int argc, char* argv[])
             if (!valid[idx])isTopo = false;
             else
             {
-                vector<int> willValid;
                 hasVisited[idx] = true;
-                for (auto relateIdx : outDegree[idx])
+                for (auto relatedIdx : outDegree[idx])
                 {
                     if (all_of(inDegree[relateIdx].begin(), inDegree[relateIdx].end(), 
                         [&hasVisited](int idx) { return hasVisited[idx]; }))
-                        willValid.push_back(relateIdx);
+                        valid[relatedIdx]=true;
                 }
-                for (auto value : willValid)valid[value] = true;
             }
         }
         if (!isTopo)falseAnswersIdx.push_back(i);
