@@ -36,7 +36,7 @@ int main()
   Poly poly2;
   Input(poly1);
   Input(poly2);
-  auto result= add(poly1,poly2);
+  auto result= poly1*poly2;
   cout << result.size();
   for (auto i =result.rbegin(); i != result.rend(); ++i)
     {
