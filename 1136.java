@@ -3,14 +3,11 @@ import java.util.Scanner;
 
 public class Main {
     public static boolean isPalindromic(String s){
-        if(s.length()%2==1)
-        {
+        if(s.length()%2==1){
             int middle = s.length() / 2;
             for (int i = 1; middle>=i; ++i)
                 if (s.charAt(middle - i) != s.charAt(middle + i))return false;
-        }
-        else
-        {
+        }else{
             int leftMid = s.length() / 2 - 1, rightMid = s.length() / 2;
             for (int i = 0; leftMid>=i; ++i)
                 if (s.charAt(leftMid - i) != s.charAt(rightMid + i))return false;
