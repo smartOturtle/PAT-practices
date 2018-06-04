@@ -8,7 +8,7 @@ using namespace std;
 template<typename Iter>
 void InsertSort(Iter first, Iter last)
 {
-    for (auto i = first; i != last; ++i)
+    for (auto i = next(first); i != last; ++i)
     {
         auto value = *i;
         auto j = i;
