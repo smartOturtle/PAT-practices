@@ -1,59 +1,47 @@
-#define  _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <array>
-#include <map>
 #include <algorithm>
+#include <vector>
+#include <list>
+#include <string>
+#include <unordered_map>
 using namespace std;
 template<typename Iter>
-void InsertionSort(Iter begin, Iter end)
+void InsertSort(Iter first, Iter last)
 {
-    for (auto i = begin; i != end; ++i)
+    for (auto i = first; i != last; ++i)
     {
+        auto value = *i;
         auto j = i;
-        auto temp = *i;
-        for (; j != begin && *(j - 1) > temp; --j)
-            *j = *(j - 1);
-        *j = temp;
+        for (; j != first && *prev(j) > value; --j)
+            *j = *prev(j);
+        *j = value;
     }
+}
+template<typename Iter1,typename Iter2>
+bool IsInsertSort(Iter1 first, Iter1 last, Iter2 initFirst, Iter2 initLast)
+{
+    auto sortedEnd = is_sorted_until(first, last);
+    if (mismatch(sortedEnd, last, next(initFirst, distance(first, sortedEnd)), initLast).first == last)return true;
+    return false;
 }
 int main(int argc, char* argv[])
 {
-    int N;
-    cin >> N;
-    vector<int> seq(N);
-    vector<int> after(N);
-    for (int i = 0; i < N; ++i)
+    int size;
+    cin >> size;
+    list<int> init(size);
+    vector<int> after(size);
+    for (auto& value : init)cin >> value;
+    for (auto& value : after)cin >> value;
+    if (IsInsertSort(after.begin(), after.end(), init.begin(), init.end()))
     {
-        cin >> seq[i];
-    }
-    for (int i = 0; i < N; ++i)
-    {
-        cin >> after[i];
-    }
-    auto sortedEnd = is_sorted_until(after.begin(), after.end());
-    bool isInsertionSort = true;
-    for (auto i = sortedEnd - after.begin(); i<after.size(); ++i)
-    {
-        if (seq[i] != after[i])isInsertionSort = false;
-    }
-    if (isInsertionSort)
-    {
+        InsertSort(after.begin(), ++is_sorted_until(after.begin(), after.end()));
         cout << "Insertion Sort\n";
-        InsertionSort(after.begin(), sortedEnd + 1);
     }
     else
     {
-        cout << "Heap Sort\n";
         pop_heap(after.begin(), is_heap_until(after.begin(), after.end()));
-        //push_heap = swim
-        //pop_heap = sink
-    }   
-    cout << after.front();
-    for (int i = 1; i < after.size(); ++i)
-    {
-        cout << " " << after[i];
+        cout << "Heap Sort\n";
     }
+    cout << after.front();
+    for (int i = 1; i < after.size(); ++i)cout << " " << after[i];
 }
