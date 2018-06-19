@@ -13,7 +13,6 @@ def poly_add(p1, p2):
     poly = p1.copy()
     for key, value in p2.items():
         poly[key] += value
-    keys = [key for key in poly.keys()]
     return poly
 
 
