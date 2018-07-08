@@ -1,38 +1,20 @@
-#include<iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-int main()
-{  int cnt;
-  cin >> cnt;
-  vector<int> seq(cnt);
-  bool allIsNegative = true;
-  for (size_t i = 0; i < cnt; i++)
-  {
-    cin >> seq[i];
-    if (seq[i] >= 0)allIsNegative = false;
-  }
-  if (allIsNegative)cout << 0 << " " << seq[0] << " " << seq[cnt - 1];  
-  else
-  {
-    int maxSum{}, currentSum{};
-    int maxSeqFirst{}, maxSeqLast{};
-    int first = seq[0];
-    for (int i = 0; i<cnt; i++)
-    {
-      currentSum += seq[i];
-      if (currentSum > maxSum)
-      {
-        maxSum = currentSum;
-        maxSeqFirst = first;
-        maxSeqLast = seq[i];
-      }
-      else if (currentSum < 0)
-      {
-        currentSum = 0;
-        first = seq[min(cnt - 1, i + 1)];
-      }
-    }
-    cout << maxSum << " " << maxSeqFirst << " " << maxSeqLast;
-  }
-}
+from itertools import islice
+
+input()
+seq = [int(i) for i in input().split(' ')]
+if all(i < 0 for i in seq):
+    print(0, seq[0], seq[-1])
+else:
+    largest_sum = seq[0]
+    begin_value = seq[0]
+    last_value = seq[0]
+    current_sum = seq[0]
+    current_begin_value = seq[0]
+    for i in islice(seq, 1, None):
+        if current_sum < 0:
+            current_sum = 0
+            current_begin_value = i
+        current_sum += i
+        if current_sum > largest_sum:
+            largest_sum, begin_value, last_value = current_sum, current_begin_value, i
+    print(largest_sum, begin_value, last_value)
