@@ -6,8 +6,8 @@ for i in range(student_size):
     students[student[0]].extend(student[1:])
 for i in range(4):
     previous_score = -1
-    rank = 0
-    same_score = 1
+    rank = 1
+    same_score = 0
     for item in sorted(students.items(), key=lambda s: s[1][i], reverse=True):
         if item[1][i] != previous_score:
             rank += same_score
