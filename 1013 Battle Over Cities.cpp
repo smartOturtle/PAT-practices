@@ -30,20 +30,17 @@ struct UnionFindSet
 };
 int main(int argc, char* argv[])
 {
+    istream::sync_with_stdio(false);
     int citySize, roadSize, checkSize;
     cin >> citySize >> roadSize >> checkSize;
     vector<pair<int, int>> edges(roadSize);
-    for (auto& edge : edges)scanf("%d%d",&edge.first,&edge.second);
+    for (auto& edge : edges)cin >> edge.first >> edge.second;
     for (int i = 0; i < checkSize; ++i)
     {
         int except;
         cin >> except;
         UnionFindSet ufset(citySize, except);
-        for_each(edges.begin(), edges.end(),[&](pair<int,int> edge)
-        {
-            if (edge.first != except && edge.second != except)ufset.Union(edge.first, edge.second);
-        });
+        for (auto edge : edges)if (edge.first != except && edge.second != except)ufset.Union(edge.first, edge.second);
         cout << count_if(ufset.container.begin(), ufset.container.end(), [](pair<int, int> item) { return item.second < 0; })-1<<'\n';
     }
 }
-
