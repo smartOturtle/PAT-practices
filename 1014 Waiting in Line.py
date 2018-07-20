@@ -5,7 +5,7 @@ windows = [collections.deque() for i in range(window_size)]
 customers = list(map(int, input().split(' ')))
 current_time = 8 * 60
 for idx, duration in enumerate(customers):
-    min_length_window = min(enumerate(windows), key=lambda w: len(w[1]))[1]
+    min_length_window = min(windows, key=len)
     if len(min_length_window) == max_capacity:
         earliest = min(windows, key=lambda w: w[0])
         current_time = earliest.popleft()
