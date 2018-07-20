@@ -14,6 +14,6 @@ for idx, duration in enumerate(customers):
     customers[idx] = min_length_window[-1] if min_length_window[-1] - duration < 17 * 60 else -1
 for idx in map(lambda i: int(i) - 1, input().split(' ')):
     if customers[idx] != -1:
-        print('{:02d}'.format(customers[idx] // 60), '{:02d}'.format(customers[idx] % 60), sep=':')
+        print('{:02d}:{:02d}'.format(customers[idx] // 60, customers[idx] % 60))
     else:
         print('Sorry')
