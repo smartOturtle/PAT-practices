@@ -1,104 +1,87 @@
-#include<iostream>
-#include <string>
-#include <map>
-#include <array>
+#define _CRT_SECURE_NO_WARNINGS
 #include <unordered_map>
-#include <set>
 #include <vector>
+#include <string>
+#include <iostream>
+#include <algorithm>
+#include <map>
 using namespace std;
-array<double, 24> timeRates;
-int month=0;
-enum Describe{ online , offline};
-unordered_map<string, Describe> describes
-{{"on-line",online},{"off-line",offline}};
+
 struct Record
 {
-	int duration;//always count from 0:0:0
-	Describe describe;
-	bool operator< (const Record& one)const
-	{
-		return duration < one.duration;
-	}
-	int Day()const { return duration / (24*60); }
-	int Hour()const { return duration % (24*60) / 60; }
-	int Minute()const { return duration % 60; }
-	double Cost()const
-	{
-		double cost = 0;
-		for (auto && timeRate : timeRates)
-		{
-			cost += timeRate * 60;
-		}
-		cost *= Day();
-		for (int i = 0; i < Hour(); ++i)
-		{
-			cost += timeRates[i]*60;
-		}
-		cost += timeRates[Hour()] * Minute();
-		return cost;
-	}
-	Record(int duration,string describe)
-	:duration(duration),describe(describes[describe])
-	{}
+    string name;
+    int day;
+    int hour;
+    int min;
+    bool isOnline;
+    Record(){}
+    Record(string name,int d,int h,int m,bool tag):
+    name(name),day(d),hour(h),min(m),isOnline(tag)
+    {}
+    void Print()const { printf("%02d:%02d:%02d ", day, hour, min); }
+    bool operator<(const Record& rhs)const
+    {
+        return make_tuple(day, hour, min) < make_tuple(rhs.day, rhs.hour, rhs.min);
+    }
 };
-int ToDuration(const string& chrono)
+vector<double> eachHourRate(24);
+int CountTotalTime(Record start,Record end)
 {
-	if (month == 0)month = stoi(chrono.substr(0, 2));
-	int duration = stoi(chrono.substr(3, 2))*24;
-	duration += stoi(chrono.substr(6, 2));
-	duration *= 60;
-	duration += stoi(chrono.substr(9, 2));
-	return duration;
-}          
-double GetCostAndPrint(const pair<Record,Record>& pairRecord)
-{
-	auto& onTime = pairRecord.first;
-	auto& offTime = pairRecord.second;
-	printf("%02d:%02d:%02d ", onTime.Day(), onTime.Hour(), onTime.Minute());
-	printf("%02d:%02d:%02d ", offTime.Day(), offTime.Hour(), offTime.Minute());
-	auto cost = offTime.Cost() - onTime.Cost();
-	printf("%d $%.2lf\n", offTime.duration - onTime.duration, cost);
-	return cost;
+    auto base=[](Record record){return (record.day * 24 + record.hour) * 60 + record.min;};
+    return base(end) - base(start);
 }
-int main()
+double CountCost(Record start,Record end)
 {
-	for (auto && rate : timeRates)
-	{
-		cin >> rate;
-		rate /= 100;
-	}
-	int size;
-	cin >> size;
-	map<string, set<Record>> records;
-	for (int i = 0; i < size; ++i)
-	{
-		string id, time, describe;
-		cin >> id >> time >> describe;
-		records[id].emplace(ToDuration(time), describe);
-	}
-	map<string, vector<pair<Record, Record>>> valid;
-	for (auto && record : records)
-	{
-		const Record* onRecord=nullptr ;
-		for (auto && time : record.second)
-		{
-			if(time.describe==offline&&onRecord!=nullptr)
-			{
-				valid[record.first].push_back({ *onRecord,time });
-				onRecord = nullptr;
-			}
-			else if(time.describe==online){ onRecord = &time; }
-		}
-	}
-	for (auto && user : valid)
-	{
-		cout << user.first;
-		printf(" %02d\n", month);
-		double totalCost = 0;
-		for (auto && pairRecord : user.second)
-		{
-			totalCost += GetCostAndPrint(pairRecord);
-		}
-		printf("Total amount: $%.2lf\n", totalCost);
-	}
+    auto base=[](Record record)
+    {
+        double cost = 0;
+        for (auto hourRate : eachHourRate)cost += (hourRate * 60);
+        cost *= record.day;
+        for (int i = 0; i < record.hour; ++i)cost += 60 * eachHourRate[i];
+        return cost + eachHourRate[record.hour] * record.min;
+    };
+    return (base(end) - base(start))/100;
+}
+int main(int argc, char* argv[])
+{
+    for (auto& rate : eachHourRate)cin >> rate;
+    int recordSize;
+    cin >> recordSize;
+    int month;
+    vector<Record> records;
+    for (int i = 0; i < recordSize; ++i)
+    {
+        string name,tag;
+        int d, h, m;
+        cin >> name;
+        scanf("%d:%d:%d:%d", &month, &d, &h, &m);
+        cin >> tag;
+        records.emplace_back(name, d, h, m, tag == "on-line");
+    }
+    unordered_map<string, Record> match;
+    map<string, vector<pair<Record, Record>>> users;
+    sort(records.begin(), records.end());
+    for (auto record : records)
+    {
+        if (record.isOnline)match[record.name] = record;
+        else if(match.find(record.name)!=match.end())
+        {
+            users[record.name].emplace_back(match[record.name], record);
+            match.erase(record.name);
+        }
+    }
+    for (auto user : users)
+    {
+        printf("%s %02d\n", user.first.c_str(), month);
+        double totalAmount = 0;
+        for (auto pairRecord : user.second)
+        {
+            pairRecord.first.Print();
+            pairRecord.second.Print();
+            auto cost = CountCost(pairRecord.first, pairRecord.second);
+            printf("%d $%.2lf\n", CountTotalTime(pairRecord.first, pairRecord.second),cost);
+            totalAmount += cost;
+        }
+        printf("Total amount: $%.2lf\n", totalAmount);
+    }
 }
