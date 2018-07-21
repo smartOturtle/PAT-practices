@@ -8,14 +8,14 @@ for i in range(4):
     previous_score = -1
     rank = 1
     same_score = 0
-    for item in sorted(students.items(), key=lambda s: s[1][i], reverse=True):
-        if item[1][i] != previous_score:
+    for id,each_scores in sorted(students.items(), key=lambda s: s[1][i], reverse=True):
+        if each_scores[i] != previous_score:
             rank += same_score
             same_score = 1
-            previous_score = item[1][i]
+            previous_score = each_scores[i]
         else:
             same_score += 1
-        students[item[0]][i] = rank
+        students[id][i] = rank
 for i in range(query_size):
     student_id = int(input())
     if student_id in students:
