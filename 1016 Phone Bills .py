@@ -29,10 +29,10 @@ def duration_cost(start, end):
     return end_time - start_time, end_fee - start_fee
 
 
-for user in sorted(users.items()):
-    print(user[0], month)
+for name,pairs in sorted(users.items()):
+    print(name, month)
     total_amount = 0
-    for start, end in user[1]:
+    for start, end in pairs:
         print(start[3:], end[3:], '{} ${:.2f}'.format(*duration_cost(start, end)))
         total_amount += duration_cost(start, end)[1]
     print('Total amount: ${:.2f}'.format(total_amount))
