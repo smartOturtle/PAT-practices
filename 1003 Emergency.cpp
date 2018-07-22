@@ -25,7 +25,8 @@ void Dijkstra(const vector<vector<Road>>& gragh, int start, int dest)
     {
         Road min;
         int idx = -1;
-        for (int i = 0; i < gragh.size(); ++i)if (!visited[i] && dist[i].length < min.length)tie(min, idx) = { dist[i],i };
+        for (int i = 0; i < gragh.size(); ++i)
+            if (!visited[i] && dist[i].length < min.length)tie(min, idx) = { dist[i],i };
         if (idx == -1)break;
         visited[idx] = true;
         for (int i = 0; i < gragh.size(); ++i)
