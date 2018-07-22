@@ -10,7 +10,7 @@ int minNeed = INT16_MAX, minBack = INT16_MAX;
 void DFS(int v)
 {
     temppath.push_front(v);
-    for (auto value : pre[v])dfs(value);
+    for (auto value : pre[v])DFS(value);
     if (pre[v].empty())
     {
         int need = 0, back = 0;
