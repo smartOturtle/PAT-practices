@@ -7,7 +7,7 @@ int capacity, n, endIdx, roadSize;
 vector<vector<int>> gragh, pre;
 deque<int> stationWeights, path, temppath, dist;
 int minNeed = INT16_MAX, minBack = INT16_MAX;
-void dfs(int v)
+void DFS(int v)
 {
     temppath.push_front(v);
     for (auto value : pre[v])dfs(value);
@@ -69,7 +69,7 @@ int main()
             else if (dist[i] == dist[idx] + weight)pre[i].push_back(idx);
         }
     }
-    dfs(endIdx);
+    DFS(endIdx);
     printf("%d 0", minNeed);
     for (int i = 1; i < path.size(); i++)printf("->%d", path[i]);
     printf(" %d", minBack);
