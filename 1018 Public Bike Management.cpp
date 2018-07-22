@@ -47,7 +47,7 @@ int main()
         gragh[end][start] = time;
     }
     pre.assign(gragh.size(), {});
-    vector<bool> collected(gragh.size());
+    deque<bool> collected(gragh.size());
     auto dist = gragh[0];
     dist[0] = 0;
     while (true)
