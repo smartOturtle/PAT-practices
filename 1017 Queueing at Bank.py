@@ -17,4 +17,4 @@ for arriving_time, processing_time in customers:
         heapreplace(windows, windows[0] + processing_time)
     else:
         heapreplace(windows, arriving_time + processing_time)
-print('{:.1f}'.format(total_waiting_time / len(customers) / 60 if len(customers) != 0 else 0))
+print('{:.1f}'.format(total_waiting_time / len(customers) / 60 if customers else 0))
