@@ -28,15 +28,23 @@ while True:
             pre_nodes[idx] = [min_idx]
         elif dist[idx] == dist[min_idx] + time:
             pre_nodes[idx].append(min_idx)
-paths = []
 path = []
+min_need = 1e9
+min_surplus = 1e9
+perfect_path = None
 
 
 def dfs(idx):
-    global path
-    global paths
+    global path, min_need, min_surplus, perfect_path
     if idx == 0:
-        paths.append(path[::-1])
+        need, surplus = 0, 0
+        for idx in reversed(path):
+            surplus += stations_bike_size[idx] - max_capacity // 2
+            if surplus < 0:
+                need -= surplus
+                surplus = 0
+        if need < min_need or (need == min_need and surplus < min_surplus):
+            min_need, min_surplus, perfect_path = need, surplus, path[::-1]
     else:
         path.append(idx)
         for i in pre_nodes[idx]:
@@ -45,16 +53,4 @@ def dfs(idx):
 
 
 dfs(problem_idx)
-min_need = 1e9
-min_surplus = 1e9
-perfect_path = None
-for path in paths:
-    need, surplus = 0, 0
-    for idx in path:
-        surplus += stations_bike_size[idx] - max_capacity // 2
-        if surplus < 0:
-            need -= surplus
-            surplus = 0
-    if need < min_need or (need == min_need and surplus < min_surplus):
-        min_need, min_surplus, perfect_path = need, surplus, path
 print(min_need, '->'.join(chain('0', (str(i) for i in perfect_path))), min_surplus)
