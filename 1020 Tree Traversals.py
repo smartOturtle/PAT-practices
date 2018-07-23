@@ -14,8 +14,7 @@ def build_tree(idx, in_slice):
             build_tree(idx - 1, in_slice[in_idx + 1:])]
 
 
-root = build_tree(len(post_order) - 1, in_order)
-queue = deque([root])
+queue = deque([build_tree(len(post_order) - 1, in_order)])
 level_order = []
 while queue:
     level_order.append(queue[0][0])
