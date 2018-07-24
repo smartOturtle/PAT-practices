@@ -62,12 +62,10 @@ int main(int argc, char* argv[])
     map<IdxType,IdxType> path;
     auto dist = gragh[start];
     dist[start].distance = 0;
-    while (true)
+    while (!notVisited.empty())
     {
-        auto minIter = min_element(notVisited.begin(), notVisited.end(), [&](IdxType a, IdxType b) { return dist[a]< dist[b]; });
-        if (minIter == notVisited.end())break;
-        auto v = *minIter;
-        notVisited.erase(minIter);
+        auto v = *min_element(notVisited.begin(), notVisited.end(), [&](IdxType a, IdxType b) { return dist[a]< dist[b]; });
+        notVisited.erase(v);
         for (auto i : notVisited)
         {
             auto extendRoad = gragh[v][i] + dist[v];
