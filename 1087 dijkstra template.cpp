@@ -4,10 +4,9 @@
 #include <string>
 #include <deque>
 #include <algorithm>
-#include <functional>
 #include <array>
-#include <unordered_map>
 #include <map>
+#include <set>
 using namespace std;
 using Name = array<char, 4>;
 
@@ -80,41 +79,31 @@ int main(int argc, char* argv[])
     //dijkstra
     vector<int> pathSize(citySize);
     vector<int> path(citySize, -1);
-    deque<bool> visited(citySize);
-    auto& dist = gragh[0];
+    set<int> notVisited;
+    for (int i = 0; i < gragh.size(); ++i)notVisited.insert(i);
+    auto dist = gragh[0];
     pathSize[0] = 1;
     dist[0].distance = 0;
     while (true)
     {
-        int v = -1;
-        Road min;
-        for (int i = 0; i < citySize; ++i)
+        auto minIter = min_element(notVisited.begin(), notVisited.end(), [&](int a, int b) { return dist[a]< dist[b]; });
+        if (minIter == notVisited.end())break;
+        auto v = *minIter;
+        notVisited.erase(minIter);
+        for (auto i : notVisited)
         {
-            if (!visited[i]&&dist[i]<min)
+            if (gragh[v][i].distance + dist[v].distance<dist[i].distance)
             {
-                v = i;
-                min=dist[i];
+                pathSize[i] = pathSize[v];
             }
-        }
-        if (v == -1)break;
-        visited[v] = true;
-        for (int i = 0; i < citySize; ++i)
-        {
-            if (!visited[i])
+            else if (gragh[v][i].distance + dist[v].distance == dist[i].distance)
             {
-                if (gragh[v][i].distance + dist[v].distance<dist[i].distance)
-                {
-                    pathSize[i] = pathSize[v];
-                }
-                else if (gragh[v][i].distance + dist[v].distance == dist[i].distance)
-                {
-                    pathSize[i] += pathSize[v];
-                }
-                if (gragh[v][i] + dist[v]<dist[i])
-                {
-                    path[i] = v;
-                    dist[i] = gragh[v][i] + dist[v];
-                }
+                pathSize[i] += pathSize[v];
+            }
+            if (gragh[v][i] + dist[v]<dist[i])
+            {
+                path[i] = v;
+                dist[i] = gragh[v][i] + dist[v];
             }
         }
     }
@@ -131,4 +120,3 @@ int main(int argc, char* argv[])
         printf("->%s", idxNameMap[viaCitys[i]].data());
     }
 }
-
