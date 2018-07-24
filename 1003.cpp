@@ -2,9 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map>
-#include <functional>
-#include <deque>
+#include <set>
 using namespace std;
 
 struct Road
@@ -12,23 +10,24 @@ struct Road
     int length = INT16_MAX;
     int teamSize = 0;
     Road() = default;
-    Road(int length,int teamSize) :length(length), teamSize(teamSize) {}
-    Road Extend(const Road& rhs)const{return {length + rhs.length,teamSize + rhs.teamSize };}
+    Road(int length, int teamSize) :length(length), teamSize(teamSize) {}
+    Road Extend(const Road& rhs)const { return { length + rhs.length,teamSize + rhs.teamSize }; }
 };
 void Dijkstra(const vector<vector<Road>>& gragh, int start, int dest)
 {
-    deque<bool> visited(gragh.size());
-    vector<int> wayCounts(gragh.size(), 1);
+    set<int> notVisited;
+    for (int i = 0; i < gragh.size(); ++i)notVisited.insert(i);
+    vector<int> wayCounts(gragh.size());
+    wayCounts[start] = 1;
     auto dist = vector<Road>(gragh.size());
     dist[start].length = 0;
     while (true)
     {
-        Road min;
-        int idx = -1;
-        for (int i = 0; i < gragh.size(); ++i)if (!visited[i] && dist[i].length < min.length)tie(min, idx) = { dist[i],i };
-        if (idx == -1)break;
-        visited[idx] = true;
-        for (int i = 0; i < gragh.size(); ++i)
+        auto minIter = min_element(notVisited.begin(), notVisited.end(), [&](int a, int b) { return dist[a].length < dist[b].length; });
+        if(minIter==notVisited.end())break;
+        auto idx = *minIter;
+        notVisited.erase(minIter);
+        for (auto i:notVisited)
         {
             auto extendRoad = dist[idx].Extend(gragh[idx][i]);
             if (extendRoad.length<dist[i].length)
@@ -36,7 +35,7 @@ void Dijkstra(const vector<vector<Road>>& gragh, int start, int dest)
                 dist[i] = extendRoad;
                 wayCounts[i] = wayCounts[idx];
             }
-            else if (extendRoad.length==dist[i].length)
+            else if (extendRoad.length == dist[i].length)
             {
                 if (extendRoad.teamSize > dist[i].teamSize)dist[i] = extendRoad;
                 wayCounts[i] += wayCounts[idx];
