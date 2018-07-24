@@ -9,24 +9,16 @@ for i in range(road_size):
     start, end, time = map(int, input().split())
     graph[start][end] = time
     graph[end][start] = time
-visited = [False for i in range(station_size + 1)]
+not_visited = set(i for i in range(station_size + 1))
 pre_nodes = [[] for i in range(station_size + 1)]
-while True:
-    min_idx = -1
-    min_time = 1e9
-    for idx, time in enumerate(dist):
-        if not visited[idx] and time < min_time:
-            min_idx, min_time = idx, time
-    if min_idx == -1:
-        break
-    visited[min_idx] = True
-    for idx, time in enumerate(graph[min_idx]):
-        if visited[idx]:
-            continue
-        if dist[idx] > dist[min_idx] + time:
-            dist[idx] = dist[min_idx] + time
+while not_visited:
+    min_idx = min(not_visited, key=lambda i: dist[i])
+    not_visited.remove(min_idx)
+    for idx in not_visited:
+        if dist[idx] > dist[min_idx] + graph[min_idx][idx]:
+            dist[idx] = dist[min_idx] + graph[min_idx][idx]
             pre_nodes[idx] = [min_idx]
-        elif dist[idx] == dist[min_idx] + time:
+        elif dist[idx] == dist[min_idx] + graph[min_idx][idx]:
             pre_nodes[idx].append(min_idx)
 path = []
 min_need = 1e9
