@@ -15,13 +15,8 @@ struct Road
     int happiness;
     int span;
     static constexpr int notValid = INT16_MAX;
-    Road(int distance, int happiness) :
-        distance(distance), happiness(happiness), span(1)
-    {
-    }
-    Road() :distance(notValid), happiness(0), span(0)
-    {
-    }
+    Road(int distance, int happiness,int span=1) :distance(distance), happiness(happiness), span(span){}
+    Road() :distance(notValid), happiness(0), span(0){}
     bool operator <(const Road& road)const
     {
         if (distance == road.distance)
@@ -33,9 +28,7 @@ struct Road
     }
     Road operator+(const Road& road)const
     {
-        Road result{ distance + road.distance,happiness + road.happiness };
-        result.span =span+road.span;
-        return result;
+        return { distance + road.distance,happiness + road.happiness,span + road.span };
     }
 };
 int main(int argc, char* argv[])
@@ -65,9 +58,9 @@ int main(int argc, char* argv[])
     }
     //dijkstra
     map<IdxType,int> pathSize;
+    pathSize[start] = 1;
     map<IdxType,IdxType> path;
     auto dist = gragh[start];
-    pathSize[start] = 1;
     dist[start].distance = 0;
     while (true)
     {
@@ -77,26 +70,20 @@ int main(int argc, char* argv[])
         notVisited.erase(minIter);
         for (auto i : notVisited)
         {
-            if (gragh[v][i].distance + dist[v].distance<dist[i].distance)
-            {
-                pathSize[i] = pathSize[v];
-            }
-            else if (gragh[v][i].distance + dist[v].distance == dist[i].distance)
-            {
-                pathSize[i] += pathSize[v];
-            }
-            if (gragh[v][i] + dist[v]<dist[i])
+            auto extendRoad = gragh[v][i] + dist[v];
+            if (extendRoad.distance<dist[i].distance)pathSize[i] = pathSize[v];
+            else if (extendRoad.distance == dist[i].distance)pathSize[i] += pathSize[v];
+            if (extendRoad<dist[i])
             {
                 path[i] = v;
-                dist[i] = gragh[v][i] + dist[v];
+                dist[i] = extendRoad;
             }
         }
     }
     //output
     deque<IdxType> viaCitys;
     string rom = "ROM";
-    for (auto i = rom; i != IdxType{}; i = path[i])
-        viaCitys.push_front(i);
+    for (auto i = rom; i != IdxType{}; i = path[i])viaCitys.push_front(i);
     cout << pathSize[rom] << " " << dist[rom].distance << " "
         << dist[rom].happiness << " " << dist[rom].happiness / dist[rom].span << '\n';
     cout << start;
