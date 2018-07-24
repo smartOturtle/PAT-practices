@@ -21,12 +21,10 @@ void Dijkstra(const vector<vector<Road>>& gragh, int start, int dest)
     wayCounts[start] = 1;
     auto dist = vector<Road>(gragh.size());
     dist[start].length = 0;
-    while (true)
+    while (!notVisited.empty())
     {
-        auto minIter = min_element(notVisited.begin(), notVisited.end(), [&](int a, int b) { return dist[a].length < dist[b].length; });
-        if(minIter==notVisited.end())break;
-        auto idx = *minIter;
-        notVisited.erase(minIter);
+        auto idx = *min_element(notVisited.begin(), notVisited.end(), [&](int a, int b) { return dist[a].length < dist[b].length; });
+        notVisited.erase(idx);
         for (auto i:notVisited)
         {
             auto extendRoad = dist[idx].Extend(gragh[idx][i]);
