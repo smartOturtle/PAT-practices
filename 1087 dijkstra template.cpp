@@ -4,12 +4,10 @@
 #include <string>
 #include <deque>
 #include <algorithm>
-#include <functional>
-#include <array>
-#include <unordered_map>
 #include <map>
+#include <set>
 using namespace std;
-using Name = array<char, 4>;
+using IdxType = string;
 
 struct Road
 {
@@ -24,10 +22,6 @@ struct Road
     Road() :distance(notValid), happiness(0), span(0)
     {
     }
-    bool IsValid()const
-    {
-        return distance != notValid;
-    }
     bool operator <(const Road& road)const
     {
         if (distance == road.distance)
@@ -39,10 +33,8 @@ struct Road
     }
     Road operator+(const Road& road)const
     {
-        Road result = road;
-        result.distance += distance;
-        result.happiness += happiness;
-        result.span += span;
+        Road result{ distance + road.distance,happiness + road.happiness };
+        result.span =span+road.span;
         return result;
     }
 };
@@ -50,85 +42,63 @@ int main(int argc, char* argv[])
 {
     //input
     int citySize, routeSize;
-    Name start;
-    scanf("%d%d%s", &citySize, &routeSize, start.data());
-    map<Name, int> nameIdxMap;
-    map<int, Name> idxNameMap;
-    nameIdxMap[start] = 0;
-    idxNameMap[0] = start;
-    vector<int> citiesHappiness{ 0 };
+    IdxType start;
+    cin >> citySize >> routeSize >> start;
+    map<IdxType, int> citiesHappiness;
+    map<IdxType, map<IdxType, Road>> gragh;
+    set<IdxType> notVisited={start};
     for (int i = 1; i < citySize; ++i)
     {
-        Name name;
-        scanf("%s", name.data());
-        nameIdxMap[name] = i;
-        idxNameMap[i] = name;
+        IdxType name;
         int happiness;
-        cin >> happiness;
-        citiesHappiness.push_back(happiness);
+        cin >>name>> happiness;
+        notVisited.insert(name);
+        citiesHappiness[name]=happiness;
     }
-    vector<vector<Road>> gragh(citySize, vector<Road>(citySize));
     for (int i = 0; i < routeSize; ++i)
     {
-        Name from, to;
+        IdxType from, to;
         int distance;
-        scanf("%s%s%d", from.data(), to.data(), &distance);
-        auto fromIdx = nameIdxMap[from], toIdx = nameIdxMap[to];
-        gragh[fromIdx][toIdx] = { distance,citiesHappiness[toIdx], };
-        gragh[toIdx][fromIdx] = { distance,citiesHappiness[fromIdx] };
+        cin >> from >> to >> distance;
+        gragh[from][to] = { distance,citiesHappiness[to], };
+        gragh[to][from] = { distance,citiesHappiness[from] };
     }
     //dijkstra
-    vector<int> pathSize(citySize);
-    vector<int> path(citySize, -1);
-    deque<bool> visited(citySize);
-    auto& dist = gragh[0];
-    pathSize[0] = 1;
-    dist[0].distance = 0;
+    map<IdxType,int> pathSize;
+    map<IdxType,IdxType> path;
+    auto dist = gragh[start];
+    pathSize[start] = 1;
+    dist[start].distance = 0;
     while (true)
     {
-        int v = -1;
-        Road min;
-        for (int i = 0; i < citySize; ++i)
+        auto minIter = min_element(notVisited.begin(), notVisited.end(), [&](IdxType a, IdxType b) { return dist[a]< dist[b]; });
+        if (minIter == notVisited.end())break;
+        auto v = *minIter;
+        notVisited.erase(minIter);
+        for (auto i : notVisited)
         {
-            if (!visited[i]&&dist[i]<min)
+            if (gragh[v][i].distance + dist[v].distance<dist[i].distance)
             {
-                v = i;
-                min=dist[i];
+                pathSize[i] = pathSize[v];
             }
-        }
-        if (v == -1)break;
-        visited[v] = true;
-        for (int i = 0; i < citySize; ++i)
-        {
-            if (!visited[i])
+            else if (gragh[v][i].distance + dist[v].distance == dist[i].distance)
             {
-                if (gragh[v][i].distance + dist[v].distance<dist[i].distance)
-                {
-                    pathSize[i] = pathSize[v];
-                }
-                else if (gragh[v][i].distance + dist[v].distance == dist[i].distance)
-                {
-                    pathSize[i] += pathSize[v];
-                }
-                if (gragh[v][i] + dist[v]<dist[i])
-                {
-                    path[i] = v;
-                    dist[i] = gragh[v][i] + dist[v];
-                }
+                pathSize[i] += pathSize[v];
+            }
+            if (gragh[v][i] + dist[v]<dist[i])
+            {
+                path[i] = v;
+                dist[i] = gragh[v][i] + dist[v];
             }
         }
     }
     //output
-    int romIdx = nameIdxMap[Name{ "ROM" }];
-    deque<int> viaCitys;
-    for (int i = romIdx; i != -1; i = path[i])
+    deque<IdxType> viaCitys;
+    string rom = "ROM";
+    for (auto i = rom; i != IdxType{}; i = path[i])
         viaCitys.push_front(i);
-    cout << pathSize[romIdx] << " " << dist[romIdx].distance << " "
-        << dist[romIdx].happiness << " " << dist[romIdx].happiness / dist[romIdx].span << '\n';
-    printf("%s", start.data());
-    for (int i = 0; i < viaCitys.size(); ++i)
-    {
-        printf("->%s", idxNameMap[viaCitys[i]].data());
-    }
+    cout << pathSize[rom] << " " << dist[rom].distance << " "
+        << dist[rom].happiness << " " << dist[rom].happiness / dist[rom].span << '\n';
+    cout << start;
+    for (auto&name : viaCitys)cout << "->" << name;
 }
-
