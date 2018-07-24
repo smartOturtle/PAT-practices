@@ -18,7 +18,8 @@ struct Road
 void Dijkstra(const vector<vector<Road>>& gragh, int start, int dest)
 {
     deque<bool> visited(gragh.size());
-    vector<int> wayCounts(gragh.size(), 1);
+    vector<int> wayCounts(gragh.size());
+    wayCounts[start]=1;
     auto dist = vector<Road>(gragh.size());
     dist[start].length = 0;
     while (true)
@@ -31,6 +32,7 @@ void Dijkstra(const vector<vector<Road>>& gragh, int start, int dest)
         visited[idx] = true;
         for (int i = 0; i < gragh.size(); ++i)
         {
+            if (visited[i])continue;
             auto extendRoad = dist[idx].Extend(gragh[idx][i]);
             if (extendRoad.length<dist[i].length)
             {
