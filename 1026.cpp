@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
         auto tablePtr = &*min_element(tables.begin(), tables.end(),
             [](Table lhs, Table rhs) { return lhs.availingTime < rhs.availingTime; });
         bool hasSkiped = false;
-        if(iter->isVip)
+        if(player.isVip)
         {
             vipPlayerIters.pop_front();
             if(!tablePtr->isVip&&!vipTablePtrs.empty())
