@@ -1,161 +1,97 @@
+#define   _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <algorithm>
+#include <string>
 #include <vector>
-#include <functional>
 #include <list>
+#include <algorithm>
+#include <cmath>
 using namespace std;
-enum Tag { NonVip, Vip};
-void PrintTime(int time)
-{
-	printf("%02d:%02d:%02d", time / 3600, time / 60 % 60, time % 60);
-}
-struct Player
-{
-	int arrivingTime;
-	int playingTime;
-	int servingTime=0;
-	Tag tag;
-	Player(int timePoint,int playingTime,Tag tag):
-	arrivingTime(timePoint),playingTime(playingTime),tag(tag)
-	{}
-	bool operator < (const Player& rhs) const
-	{
-		return arrivingTime < rhs.arrivingTime;
-	}
-	void Print()
-	{
-		PrintTime(arrivingTime);
-		cout << " ";
-		PrintTime(servingTime);
-		int waitingTime = servingTime - arrivingTime;
-		if (waitingTime % 60 >=30)waitingTime += 60;
-		cout << " "<<waitingTime/60<<'\n';
-	}
-};
 struct Table
 {
-	Tag tag;
-	int endTime;
-	explicit Table(int endTime=8*3600,Tag tag=NonVip):
-	tag(tag),endTime(endTime)
-	{ }
-	bool operator <(const Table& rhs)const
-	{
-		return endTime < rhs.endTime;
-	}
-	int servePlayerSize = 0;
+    bool isVip=false;
+    int servedSize=0;
+    int availingTime=8*60*60;
 };
-int N;
-vector<Player> players;
-int totalTableSize, vipTableSize;
-vector<Table> tables;
-vector<reference_wrapper<Table>> vipTables;
-void Prepare()
+
+struct Player
 {
-	cin >> N;
-	for (int i = 0; i < N; ++i)
-	{
-		int hh, mm, ss;
-		scanf("%d:%d:%d", &hh, &mm, &ss);
-		int timePoint = (hh * 60 + mm) * 60 + ss;
-		int playTime, tag;
-		cin >> playTime >> tag;
-		if (hh >= 21)continue;
-		if (playTime > 120)playTime = 120;//cut off
-		players.emplace_back(timePoint, playTime*60, Tag(tag));
-	}
-	cin >> totalTableSize >> vipTableSize;
-	for (int i = 0; i < totalTableSize; ++i)
-		tables.emplace_back();
-	for (int i = 0; i < vipTableSize; ++i)
-	{
-		int num;
-		cin >> num;
-		tables[num - 1].tag = Vip;
-	}
-	sort(players.begin(), players.end());
-	for (auto && table : tables)
-		if (table.tag == Vip)vipTables.push_back(table);
+    bool isVip = false;
+    int arrivingTime;
+    int playingDuration;
+    int playingTime;
+    Player(int arriving,int duration,bool isVip):arrivingTime(arriving),playingDuration(duration),isVip(isVip){}
+};
+void PrintTime(int t)
+{
+    printf("%02d:%02d:%02d ", t / 60 / 60, t / 60 % 60, t % 60);
 }
-int idx = 0;
-template<typename C>
-Table& MinTable(int time,C& tables)
+int main(int argc, char* argv[])
 {
-	auto temp = &static_cast<Table&>(tables.front());
-	for (Table& table : tables)
-	{
-		if (table.endTime < time)return table;
-		if (table.endTime < temp->endTime)temp = &table;
-	}
-	return *temp;
-}
-Table& GetTable(int time)
-{
-	return MinTable(time, tables);
-}
-Table& GetTableForVip(int time)
-{
-	auto& table = MinTable(time,vipTables);
-	if (table.endTime > time)return GetTable(time);
-	return table;
-}
-list<Player*> queue;
-void Register(Player& player, Table& table)
-{
-	int time = max(player.arrivingTime, table.endTime);
-	player.servingTime = time;
-	table.endTime = time + player.playingTime;
-	table.servePlayerSize++;
-}
-Player& MatchInQueue(Table& table)
-{
-	auto pos = queue.begin();
-	if(table.tag==Vip)
-	{
-		pos = find_if(queue.begin(), queue.end(), 
-			[](Player* player) { return player->tag == Vip; });
-		if (pos == queue.end())pos = queue.begin();
-	}
-	auto player = *pos;
-	queue.erase(pos);
-	return *player;
-}
-void EventLoop()
-{
-	while (idx<N||!queue.empty())
-	{
-		if(GetTable(players[idx].arrivingTime).endTime<=players[idx].arrivingTime&&queue.empty())
-		{
-			if (players[idx].tag == Vip)Register(players[idx], GetTableForVip(players[idx].arrivingTime));
-			else Register(players[idx], GetTable(players[idx].arrivingTime));
-			idx++;
-		}
-		else
-		{
-			while (idx<N&&GetTable(players[idx].arrivingTime).endTime>players[idx].arrivingTime)
-			{
-				queue.push_back(&players[idx]);
-				idx++;
-			}
-			auto& table = GetTable(players[idx-1].arrivingTime);
-			if(table.endTime>=21*3600)break;
-			Register(MatchInQueue(table), table);
-		}
-	}
-}
-void Output()
-{
-	sort(players.begin(), players.end(), 
-		[](const Player& lhs, const Player& rhs) { return lhs.servingTime < rhs.servingTime; });
-	for (auto && player : players)
-		if(player.servingTime>0)player.Print();
-	cout << tables.front().servePlayerSize;
-	for (int i = 1; i < tables.size(); ++i)
-		cout <<" "<< tables[i].servePlayerSize;
-}
-int main()
-{
-	Prepare();
-	EventLoop();
-	Output();
+    int playerSize;
+    cin >> playerSize;
+    list<Player> players;
+    list<decltype(players)::iterator>vipPlayerIters ;
+    for (int i = 0; i < playerSize; ++i)
+    {
+        int hh, mm, ss, playingDuraion, isVip;
+        scanf("%d:%d:%d%d%d", &hh, &mm, &ss, &playingDuraion, &isVip);
+        playingDuraion = min(playingDuraion, 120);
+        players.emplace_back((hh * 60 + mm) * 60 + ss, playingDuraion * 60, isVip);
+        if (isVip)vipPlayerIters.push_back(--players.end());
+    }
+    players.sort([](Player lhs, Player rhs) { return lhs.arrivingTime < rhs.arrivingTime; });
+    vipPlayerIters.sort([](auto lhs, auto rhs) { return lhs->arrivingTime < rhs->arrivingTime; });
+    int tableSize, vipTableSize;
+    cin >> tableSize >> vipTableSize;
+    vector<Table> tables(tableSize);
+    vector<Table*> vipTablePtrs;
+    for (int i = 0; i < vipTableSize; ++i)
+    {
+        int idx;
+        cin >> idx;
+        tables[idx - 1].isVip = true;
+        vipTablePtrs.push_back(&tables[idx - 1]);
+    }
+    vector<Player> orderBySevering;
+    for (auto iter = players.begin(); iter != players.end(); )
+    {
+        auto player = *iter;
+        auto tablePtr = &*min_element(tables.begin(), tables.end(),
+            [](Table lhs, Table rhs) { return lhs.availingTime < rhs.availingTime; });
+        bool hasSkiped = false;
+        if(iter->isVip)
+        {
+            vipPlayerIters.pop_front();
+            if(!tablePtr->isVip&&!vipTablePtrs.empty())
+            {
+                auto vipTablePtr = *min_element(vipTablePtrs.begin(), vipTablePtrs.end(),
+                    [](Table* lhs, Table* rhs) { return lhs->availingTime < rhs->availingTime; });
+                if (vipTablePtr->availingTime <=player.arrivingTime)tablePtr = vipTablePtr;
+            }
+        }
+        else if (tablePtr->isVip && !vipPlayerIters.empty())
+        {
+            if (vipPlayerIters.front()->arrivingTime <= tablePtr->availingTime)
+            {
+                player = *vipPlayerIters.front();
+                players.erase(vipPlayerIters.front());
+                vipPlayerIters.pop_front();
+                hasSkiped = true;
+            }
+        }
+        player.playingTime = max(tablePtr->availingTime, player.arrivingTime);
+        if (player.playingTime>=21 * 60 * 60)break;
+        tablePtr->availingTime = player.playingDuration + player.playingTime;
+        tablePtr->servedSize++;
+        orderBySevering.push_back(player);
+        if (!hasSkiped)++iter;
+    }
+    for (auto player : orderBySevering)
+    {
+        PrintTime(player.arrivingTime);
+        PrintTime(player.playingTime);
+        cout << (int)round((player.playingTime - player.arrivingTime) / 60.0)<<'\n';
+    }
+    cout << tables.front().servedSize;
+    for (int i = 1; i < tables.size(); ++i)cout <<" "<< tables[i].servedSize;
 }
