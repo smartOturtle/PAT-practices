@@ -16,4 +16,5 @@ for c, _ in filter(lambda p: p[0] == p[1], zip(*first_pair)):
 for i, (c1, c2) in enumerate(zip(*second_pair)):
     if str.isalpha(c1) and c1 == c2:
         minute = i
+        break
 print(weekday, '{:02d}:{:02d}'.format(hour, minute))
