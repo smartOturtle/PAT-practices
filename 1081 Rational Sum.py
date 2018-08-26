@@ -4,12 +4,10 @@ input()
 result = Fraction()
 for f in input().split():
     result += Fraction(f)
-is_negative = '-' if result < 0 else ''
-result = abs(result)
-if result.numerator > result.denominator:
-    print(is_negative, result.numerator // result.denominator, sep='', end='')
+if result.numerator // result.denominator:
+    print(result.numerator // result.denominator, end='')
     result._numerator %= result._denominator
     if result.numerator:
-        print(' ', is_negative, result, sep='')
+        print(' ', result, sep='')
 else:
-    print(is_negative, result, sep='')
+    print(result)
