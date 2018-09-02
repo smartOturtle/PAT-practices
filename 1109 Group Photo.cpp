@@ -10,11 +10,6 @@ using Person = pair<int, string>;
 vector<Person> people;
 int main(int argc, char* argv[])
 {
-    //each row has N/k, there are extra people in last row
-    //rear row no shorter than
-    //i th row must >= i-1 th row
-    //tallest one in the middle as idx rowSize/2
-    //middle out from left to right
     int peopleSize, rowSize;
     cin >> peopleSize >> rowSize;
     for (int i = 0; i < peopleSize; ++i)
