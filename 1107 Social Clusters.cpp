@@ -1,58 +1,62 @@
-#define  _CRT_SECURE_NO_WARNINGS
+#include <vector>
 #include <iostream>
 #include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <functional>
+#include<unordered_map>
+#include<functional>
 using namespace std;
-vector<int> clusters(1001);
-//0 as illegal
+vector<int> people;
 int Find(int idx)
 {
-    if (clusters[idx] <=0)return idx;
-    return clusters[idx] = Find(clusters[idx]);
+	if(people[idx]<0)return idx;
+	return people[idx]=Find(people[idx]);
 }
-bool Union(int lhs,int rhs)
+void Union(int lhs,int rhs)
 {
-    auto lhsRoot = Find(lhs);
-    auto rhsRoot = Find(rhs);
-    if (lhsRoot == rhsRoot)return false;
-    if (clusters[lhsRoot] > clusters[rhsRoot])swap(lhsRoot, rhsRoot);
-    clusters[lhsRoot] += clusters[rhsRoot];
-    clusters[rhsRoot] = lhsRoot;
-    return true;
+	auto lhsRoot=Find(lhs);
+	auto rhsRoot=Find(rhs);
+	if(lhsRoot==rhsRoot) return;
+	if(people[lhsRoot]<people[rhs])swap(lhsRoot,rhsRoot);
+	people[rhsRoot]+=people[lhsRoot];
+	people[lhsRoot]=rhsRoot;
 }
-int main(int argc, char* argv[])
+int main()
 {
-    int peopleSize;
-    cin >> peopleSize;
-    for (int i = 0; i < peopleSize; ++i)
-    {
-        int hobitSize;
-        scanf("%d:", &hobitSize);
-        vector<int> hobits(hobitSize);
-        for (auto&& hobitIdx : hobits)
-        {
-            cin >> hobitIdx;
-        }
-        for (int j = 1; j < hobits.size(); ++j)
-        {
-            Union(hobits.front(), hobits[j]);
-        }
-        clusters[Find(hobits.front())]--;
-    }
-    vector<int> clustersSize;
-    for (auto cluster : clusters)
-    {
-        if (cluster < 0)clustersSize.push_back(-cluster);
-    }
-    sort(clustersSize.begin(), clustersSize.end(), greater<int>());
-    cout << clustersSize.size()<<'\n';
-    cout << clustersSize.front();
-    for (int i = 1; i < clustersSize.size(); ++i)
-    {
-        cout << " " << clustersSize[i];
-    }
+	int peopleSize;
+	cin>>peopleSize;
+	people.resize(peopleSize,-1);
+	unordered_map<int,vector<int>> hobbyGroup;
+	for(auto i=0;i<peopleSize;++i)
+	{
+		int hobbySize;
+		scanf("%d:",&hobbySize);
+		for(auto j=0;j<hobbySize;++j)
+		{
+			int id;
+			cin>>id;
+			hobbyGroup[id].push_back(i);
+		}
+	}
+	for(auto iter=hobbyGroup.begin();iter!=hobbyGroup.end();++iter)
+	{
+		auto& group=iter->second;
+		if(!group.empty())
+		{
+			int first=group.front();
+			for(int i=1;i<group.size();i++)
+			{
+				Union(first,group[i]);
+			}
+		}
+	}
+	vector<int> clusters;
+	for_each(people.begin(),people.end(),[&clusters](int value){if(value<0)clusters.push_back(-value);});
+	sort(clusters.begin(),clusters.end(),greater<int>());
+	cout<<clusters.size()<<'\n';
+	if(clusters.size())
+	{
+		cout<<clusters.front();
+		for(int i=1;i<clusters.size();++i)cout<<" "<<clusters[i];
+	}
+	return 0;
 }
 
