@@ -4,7 +4,8 @@ for i in range(10):
         print(s, 'is a palindromic number.')
         break
     else:
-        print(s, '+', ''.join(reversed(s)), '=', int(s) + int(''.join(reversed(s))))
-        s = str(int(s) + int(''.join(reversed(s))))
+        result=int(s) + int(''.join(reversed(s)))
+        print(s, '+', ''.join(reversed(s)), '=', result)
+        s = str(result)
 else:
     print('Not found in 10 iterations.')
