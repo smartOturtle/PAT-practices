@@ -1,4 +1,3 @@
-#define  _CRT_SECURE_NO_WARNINGS
 #include <vector>
 #include <string>
 #include <functional>
@@ -11,6 +10,17 @@
 #include <iostream>
 #include <list>
 using namespace std;
+template<typename Iter,typename Pred>
+bool IsHeap(Iter first,Iter last,Pred cmp)
+{
+    int parent=0;
+    for(int child=1;child<last-first;++child)
+    {
+        if(cmp(*(first+parent),*(first+child)))return false;
+        if(child%2==0)parent++;
+    }
+    return true;
+}
 void Travelsal(int idx,vector<int>& heap)
 {
     if(idx>=heap.size())return;
@@ -26,9 +36,12 @@ int main(int argc, char* argv[])
     for (int i = 0; i < querySize; ++i)
     {
         vector<int> heap(heapSize);
-        for (auto && value : heap)cin >> value;
-        if (is_heap(heap.begin(), heap.end())) { cout << "Max Heap"; }
-        else if (is_heap(heap.begin(), heap.end(), greater<int>())) { cout << "Min Heap"; }
+        for (int j = 0; j < heapSize; ++j)
+        {
+            cin >> heap[j];
+        }
+        if (IsHeap(heap.begin(), heap.end(),less<int>())) { cout << "Max Heap"; }
+        else if (IsHeap(heap.begin(), heap.end(), greater<int>())) { cout << "Min Heap"; }
         else { cout << "Not Heap"; }
         cout << '\n';
         Travelsal(0, heap);
