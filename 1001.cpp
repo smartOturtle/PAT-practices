@@ -15,6 +15,7 @@ int main()
   int k = 1000;
   int i;
   for (i = 1;c/int(pow(k, i)) ; ++i){ }
+  //同步测试
   for (int j = i - 1; j >=0; --j)
   {
     int head = c / pow(k, j);
